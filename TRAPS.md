@@ -121,3 +121,45 @@ app's own screen.
 
 It reported `0 file(s) re-rendered` and a follow-up audit loop over the same
 empty list printed a cheerful "all patched". Pass slugs as explicit arguments.
+
+## 9. A gate that exists is not a gate that runs
+
+`check-paywall-copy.mjs` — the one check standing between a paid claim and a
+feature that does not exist — ran only in the local `verify-all.sh`. The CI
+workflow enumerates its steps by hand and simply never called it. `check:release`
+does not call it either; that is `check-release-config.ts` alone.
+
+The proof was rectap: a scaffold whose paywall was four claims about features it
+does not have went **green in CI twice**, while `npm run verify` refused the
+identical commit. Nothing was broken and nothing was reported. The step was
+absent, and an absent step looks exactly like a passing one.
+
+Two habits that catch this class:
+
+- When you add a gate, **add it to CI in the same change**, and prove it by
+  watching it fail once on a case you know is bad. A gate never seen red has
+  never been shown to work.
+- `verify-all.sh` and `ci.yml` are two hand-maintained lists of the same
+  intent. Whenever one gains a step, diff them.
+
+## 10. Stale data reads exactly like fresh data
+
+Three variants of one bug in a single day, between three sessions:
+
+- `_shared/admob-ids.tsv` listed one wave of apps and said nothing about its own
+  scope. Checking seventeen slugs against it returned zero matches, which was
+  read as "AdMob does not exist for these apps" and written into the portfolio
+  record. All thirty-four records existed, with ad units, and every repo already
+  had the identifiers as CI secrets.
+- A RevenueCat audit read `items` off the wrong level of a `{"data":{"items":…}}`
+  envelope, got `None`, coerced it to `[]`, and reported "0 apps need Apple
+  credentials" while the CLI was plainly saying 44 did.
+- A watcher process backgrounded with `&` inside a tool call died with its
+  shell. Its results file stopped updating and kept serving old contents, which
+  looked precisely like a slow CI queue.
+
+None errored. All three produced a clean, confident, wrong answer.
+
+**If a check finds zero problems, prove the check can find one** — point it at a
+case you know is broken before believing a clean result. And prefer the account,
+the API or the process over any local file that claims to describe them.
