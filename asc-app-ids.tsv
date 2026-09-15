@@ -1,13 +1,30 @@
 slug	bundleId	ascAppId	appStoreName
-loopwits	com.altixcode.loopwits	6812275480	Loopwits
-poursort	com.altixcode.poursort	6812275306	PourSort
-foldup	com.altixcode.foldup	6812275609	Foldup Tile Merge
-knotter	com.altixcode.knotter	6812275869	Knotter Cord Puzzle
-wordflock	com.altixcode.wordflock	6812275509	Wordflock
-minestreak	com.altixcode.minestreak	6812275463	MineStreak
-toppl	com.altixcode.toppl	6812275838	Toppl Tower Stack
-solari	com.altixcode.solari	6812275616	Solari Daily Solitaire
-poplet	com.altixcode.poplet	6812275902	Poplet Bubble Pop
-quandary	com.altixcode.quandary	6812275846	Quandary Daily Quiz
+calcpair	com.altixcode.calcpair	6812380465	Calcpair
+convertwise	com.altixcode.convertwise	6812380174	Convertwise
+dicewit	com.altixcode.dicewit	6812380496	Dicewit
 flipnest	com.altixcode.flipnest	6812275522	Flipnest
+foldup	com.altixcode.foldup	6812275609	Foldup Tile Merge
+klondo	com.altixcode.klondo	6812380911	Klondo Solitaire
+knotter	com.altixcode.knotter	6812275869	Knotter Cord Puzzle
+loopwits	com.altixcode.loopwits	6812275480	Loopwits
+memoflip	com.altixcode.memoflip	6812380663	Memoflip Memory Match
+mergewit	com.altixcode.mergewit	6812380588	Mergewit
+minestreak	com.altixcode.minestreak	6812275463	MineStreak
+multitick	com.altixcode.multitick	6812380538	Multitick
+namewell	com.altixcode.namewell	6812380906	Namewell
+poplet	com.altixcode.poplet	6812275902	Poplet Bubble Pop
+poursort	com.altixcode.poursort	6812275306	PourSort
+quandary	com.altixcode.quandary	6812275846	Quandary Daily Quiz
 quiktap	com.altixcode.quiktap	6812275663	Quiktap
+quizburst	com.altixcode.quizburst	6812380943	Quizburst
+ratherly	com.altixcode.ratherly	6812380803	Ratherly
+ringaway	com.altixcode.ringaway	6812380813	Ringaway
+scanlit	com.altixcode.scanlit	6812380808	Scanlit
+solari	com.altixcode.solari	6812275616	Solari Daily Solitaire
+spinwit	com.altixcode.spinwit	6812380324	Spinwit
+splitjar	com.altixcode.splitjar	6812380687	Splitjar Bill Splitter
+sudokly	com.altixcode.sudokly	6812380670	Sudokly
+tapforge	com.altixcode.tapforge	6812380846	Tapforge Idle Tapper
+toppl	com.altixcode.toppl	6812275838	Toppl Tower Stack
+trilite	com.altixcode.trilite	6812381098	Trilite
+wordflock	com.altixcode.wordflock	6812275509	Wordflock
