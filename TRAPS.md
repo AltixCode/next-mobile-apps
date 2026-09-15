@@ -578,3 +578,41 @@ the field that stops an unreviewed binary shipping straight to users.
 
 Found by dev-3a, who read it back from the API rather than trusting the PATCH
 response — which is what turned "four apps FAILED" into a one-character fix.
+
+---
+
+## 22. A field that shows your text but does not filter is not a broken search
+
+The AdMob console's app list has 89 rows, 15 to a page, and the paginator
+resists automation: synthetic clicks do not advance it, sort and page URL
+parameters are ignored, and `document.querySelectorAll('button')`
+intermittently returns nothing while `[role="row"]` works — the grid is
+probably inside a shadow root the button query misses.
+
+An hour went into paging. The answer was not to page at all: **search**. And the
+reason search appeared broken first time is the trap:
+
+Setting `input.value` and dispatching a synthetic `input` event **puts the text
+in the box and filters nothing**. The grid listens for real key events. So the
+screen shows exactly what a working search would show — the query sitting in the
+field — and the unchanged results read as "no matches" rather than "your
+keystrokes never happened". Driving it with a real typing tool (`slowly: true`,
+so each keystroke is a genuine event) returned `1 - 2 of 2` instantly.
+
+The general form: **a UI that reflects your input has not necessarily received
+it.** Value and event are separate things, and only one of them is visible. When
+a search, filter or autocomplete appears to return nothing, prove the widget saw
+the keystrokes before believing the result set.
+
+There is a second lesson stacked on the first, and it is the more expensive one.
+The whole search was for two AdMob apps believed not to exist. A count settled
+it without any console at all: 44 apps × 2 platforms = 88, and the account held
+**89**. The apps existed; they had simply never been found. **An hour of
+automation went into a premise nobody had spent thirty seconds checking** — and
+had the "create them" path been taken instead, it would have put four duplicate
+apps into a live ad account.
+
+Before automating a search for something, count what you expect to find.
+
+Console findings by dev-3a; the arithmetic came from the other side of the pair,
+which is rather the point.
