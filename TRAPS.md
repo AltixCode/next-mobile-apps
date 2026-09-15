@@ -184,3 +184,54 @@ session's keychain, so the private key cannot be used and nobody is there to
 answer the prompt. Go straight to the keychain; do not spend time on the
 certificate, the provisioning profile, or whichever framework it happened to be
 signing when it gave up.
+
+---
+
+## `rc setup apple` is broken, and the purchase key it was for is account-level
+
+Two separate traps that meet in the same place.
+
+**The command.** `rc setup apple` signs in to Apple as a person and starts by
+reading Apple's auth service key from
+`appstoreconnect.apple.com/olympus/v1/app/config?hostname=itunesconnect.apple.com`.
+Apple removed that route. It answers `404 request rejected` before any
+credential leaves the machine, for every account, on rc 0.1.2 — verified
+2026-09-15 with no cookies at all, while `/olympus/v1/session` still answers
+401, so the service is up and the route is gone. If you see that 404, stop:
+it is not the Apple account, not the password, not 2FA, and no amount of
+re-authenticating will move it.
+
+**The key.** What that command was going to install is the **In-App Purchase
+key**, and without it a purchase succeeds on the device and never resolves to
+an entitlement — the person pays and the ads stay, invisibly, until someone
+actually buys. It is *not* `AuthKey_*.p8` (that is the App Store Connect API
+key, a different artifact for a different job).
+
+The key is **account-level**, so one key already covers every app in the
+portfolio and a new app needs no new key. RevenueCat's v2 API takes it
+directly, no Apple sign-in at all:
+
+```bash
+cd /Volumes/ExtremePro/Dev
+bash scripts/ship/rc-apple-credentials.sh                       # what is missing
+bash scripts/ship/rc-apple-credentials.sh --apply \
+  --key-file ~/Certificates/SubscriptionKey_N23G6QX99Z.p8 \
+  --key-id N23G6QX99Z --issuer c7e17516-b80c-42fe-a192-229b4cee0a48 \
+  --vendor 94785861
+```
+
+Two ways to get it silently wrong:
+
+- **The issuer id is the one on the In-App Purchase tab**, not the App Store
+  Connect API issuer in `~/Certificates/issuerID.txt`.
+- **RevenueCat validates none of it.** A random P-256 key with an invented key
+  id and issuer is accepted and reads back `subscription_key_configured: true`.
+  A green run proves the field is set, never that the key is right. Only a
+  sandbox purchase does.
+
+And `RC_API_KEY` from `~/.zshrc` is scoped to HushTunnel alone — a v2 secret key
+cannot span projects. Prefix anything touching another project with
+`env -u RC_API_KEY`, which falls back to the profile's OAuth login.
+
+Full detail: `docs/agents/05-payments-revenuecat.md` §7 and
+`~/Certificates/README.md`.
