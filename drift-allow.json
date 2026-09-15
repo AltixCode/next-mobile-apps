@@ -21,5 +21,8 @@
   ],
   "mergewit": [
     "app/settings.tsx"
+  ],
+  "klondo": [
+    "app/settings.tsx"
   ]
 }
