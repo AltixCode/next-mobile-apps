@@ -349,3 +349,65 @@ the defect worth looking for instead.
 Same shape as the Ringaway `avatar: {width:132,height:132}` false positive: a
 scan matched a pattern, not the property the pattern was a proxy for. See
 trap #12 — name the thing you are measuring.
+
+---
+
+## 16. A clean drift report says nothing about apps drift cannot see
+
+`check-drift.mjs` compares generated apps against `_template`. It knows only
+the apps it generated. Fourteen apps in this portfolio predate the template,
+and for those it reports nothing at all — not "missing", not "absent", nothing.
+
+So it reported **0 absent** while fourteen apps had no `check-paywall-copy.mjs`
+and no `check-locale-scripts.mjs` — no paywall gate and no mixed-script gate,
+on apps that ship. The tool was working correctly and the conclusion drawn from
+it was false, which is the dangerous combination.
+
+Both questions are worth asking separately, and the second one is the one that
+looks fixed when it isn't:
+
+- which apps are **missing** a gate, and
+- which apps **have** the file but never **run** it.
+
+Present-but-unwired is the worse case: the script sits in `scripts/`, greps
+clean, and never executes. Check the wiring (`package.json`, `verify-all.sh`),
+not the file listing.
+
+The rule: **a gate's coverage is the set of apps it actually ran in, not the
+set it was copied into, and never the set some other tool happened to enumerate.**
+
+---
+
+## 17. A passing unit test is not a wired feature
+
+Six apps called `shouldShowInterstitial({ gamesPlayed: 1, ... })` while their own
+`MIN_GAMES_BEFORE_FIRST_INTERSTITIAL` was `2` and the policy rejects anything at
+or below it. The branch was dead in every one: no interstitial could ever appear,
+while all six paywalls sold *"the banner and the full-screen ad are gone for
+good"* — a claim the buyer pays for, about an ad that did not exist.
+
+**Every one of those apps had a passing `adPolicy.test.ts.`** The policy was
+never the broken part. It was tested against its own inputs, in isolation, and
+was correct about every one of them. Nothing tested the call site, so the
+wiring could be nonsense and the suite stayed green — and a green suite is
+exactly what stops anyone looking.
+
+Wordflock was the same defect one step further along: `showInterstitial` had
+*zero* call sites. Preloaded on every launch, shown never, 0% impressions.
+
+Two things follow:
+
+1. **Test the call site, not only the unit.** "Does the policy return false for
+   these arguments" and "can this feature ever happen in the product" are
+   different questions, and only the second one is what the paywall is selling.
+2. **When a claim is on the paywall, the test belongs to the claim.** Money is
+   the forcing function: if the copy says the ad goes away, something must prove
+   the ad was there.
+
+`scripts/check-ad-wiring.mjs` now fails an app whose play count is a literal
+that can never clear its own minimum, or that imports `showInterstitial`
+without ever invoking it. Confirm a new gate fails on the original defect
+before trusting it — a gate that passes everywhere may be passing vacuously.
+
+Same family as trap #12 and trap #15: a thing that is correct in isolation
+proves nothing about the property you actually care about.
