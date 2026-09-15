@@ -140,3 +140,91 @@ launched.** That is the condition that let six crashing binaries reach Apple, an
 it is worth fixing as an order-of-work rule: launch an app before doing any more
 screenshot, metadata or submission work on it. A launch takes seconds; a
 rejection costs days.
+
+---
+
+## Found: two of the four missing AdMob ids were already in our own files
+
+They did not need the console at all. `knotter` and `minestreak` record their
+AdMob app ids in their own `HANDOFF.md`, and have all along:
+
+```
+knotter     ADMOB_IOS_APP_ID      ca-app-pub-2504845459806550~8179283974
+knotter     ADMOB_ANDROID_APP_ID  ca-app-pub-2504845459806550~4924144254
+minestreak  ADMOB_IOS_APP_ID      ca-app-pub-2504845459806550~7113614310
+minestreak  ADMOB_ANDROID_APP_ID  ca-app-pub-2504845459806550~7937320405
+```
+
+**Verified against an independent source before trusting them.** `foldup`'s ids
+in the same files are `~9388423860` (iOS) and `~1805447313` (Android), which
+match exactly what was read from the AdMob console for foldup. Two readings, two
+sources, same values — so this file is recording real ids, not placeholders.
+
+`toppl` and `quandary` are *not* recorded anywhere: their HANDOFF lists "AdMob +
+RevenueCat" as outstanding work. Those two genuinely need the console, and quite
+possibly need the AdMob apps creating first.
+
+### I could not set these myself
+
+`gh secret set` was refused in my session by the permission classifier as a
+secret-store write, notwithstanding the general `gh` permission given earlier.
+I have not worked around it, and I have not asked the other session to run it on
+my behalf — that would just be the same restriction wearing a different hat.
+
+So these four values need applying by you, or by the other session under its own
+permissions:
+
+```
+gh secret set ADMOB_IOS_APP_ID     -R AltixCode/knotter    --body "ca-app-pub-2504845459806550~8179283974"
+gh secret set ADMOB_ANDROID_APP_ID -R AltixCode/knotter    --body "ca-app-pub-2504845459806550~4924144254"
+gh secret set ADMOB_IOS_APP_ID     -R AltixCode/minestreak --body "ca-app-pub-2504845459806550~7113614310"
+gh secret set ADMOB_ANDROID_APP_ID -R AltixCode/minestreak --body "ca-app-pub-2504845459806550~7937320405"
+```
+
+After that both need a rebuild, and the new binaries need checking with
+`plutil -extract GADApplicationIdentifier raw <App>.app/Info.plist` — reading the
+value back out rather than assuming the secret took.
+
+## The pattern behind it — and two more apps to check
+
+There is a clean rule in the data, and it holds without exception across the
+eleven apps whose binaries I could read:
+
+**An app whose `HANDOFF.md` records its AdMob app ids shipped `-`. An app whose
+HANDOFF records none shipped a real id.**
+
+```
+HANDOFF records ids -> binary has "-"     foldup  knotter  loopwits  minestreak
+HANDOFF records none -> binary is fine    dicewit ringaway scanlit spinwit
+                                          klondo memoflip mergewit
+```
+
+That is 4 of 4 and 7 of 7, and it describes a coherent mistake rather than a
+coincidence: two provisioning routes. One created the AdMob apps and wrote the
+ids into the handoff — and never set the repository secrets. The other set the
+secrets in bulk and never wrote anything down. The documented apps are the
+broken ones.
+
+### The prediction, and why it matters
+
+**Six** apps record ids in their HANDOFF, not four. The two I could not verify
+are **poursort** and **wordflock** — neither has a retrievable CI artifact.
+
+```
+poursort    ca-app-pub-2504845459806550~2876565410
+wordflock   ca-app-pub-2504845459806550~6762260526
+```
+
+If the rule holds, both shipped `-` and both crash on launch. **poursort is in
+App Store review.** That would make four apps in review with crashing binaries,
+not three.
+
+This is a prediction from a pattern, not a reading from a binary, and I am
+labelling it as one. It is cheap to settle: rebuild either app and run
+`plutil -extract GADApplicationIdentifier raw <App>.app/Info.plist` on the
+result. I would settle poursort first, because it is the one currently in front
+of a reviewer.
+
+The same two ids above are what its secrets should be set to, and they are
+recorded in the apps' own files — the same source that proved correct for foldup
+against the console.
