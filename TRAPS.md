@@ -443,3 +443,33 @@ Two rules come out of this, and the second is the less obvious one:
 The general shape: a workaround outlives the thing it worked around, and nothing
 ever re-runs the experiment because the note reads like a fact rather than an
 observation.
+
+---
+
+## 19. A cancelled run does not mean somebody cancelled it
+
+Runs in two repos showed up `cancelled`. Neither session had cancelled
+anything — one of us had actually been *refused* permission to cancel runs and
+had honoured that — so `cancelled` looked like a third party acting on the
+account.
+
+It was the workflows cancelling themselves:
+
+- `ci.yml` sets `group: ci-${{ github.ref }}` with `cancel-in-progress: true`,
+  so a newer push kills the older CI run outright.
+- `deploy.yml` sets `group: release-${{ github.repository }}` with
+  `cancel-in-progress: false` — **and still produces cancellations**, because
+  GitHub keeps only *one pending run per concurrency group*. A newer release run
+  entering the group cancels the older **pending** one; anything already in
+  progress is left alone.
+
+That second one is the trap. `cancel-in-progress: false` reads like "nothing
+gets cancelled", and it means only "nothing *running* gets cancelled". The
+queue still gets superseded.
+
+So before concluding that someone or something is interfering with a repo, read
+the `concurrency:` block of the workflow. The behaviour we were about to go
+asking for permission to perform by hand was already built in.
+
+General form, and the reason this sits next to trap #12: **an event's name is
+not its cause.** `cancelled` is a state, not an actor.
