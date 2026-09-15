@@ -616,3 +616,49 @@ Before automating a search for something, count what you expect to find.
 
 Console findings by dev-3a; the arithmetic came from the other side of the pair,
 which is rather the point.
+
+---
+
+## 23. A queued run carries the secrets it was queued with
+
+Six apps shipped binaries with `GADApplicationIdentifier = "-"`. The repository
+secrets were corrected, the runs were already queued, and the reasoning was:
+secrets resolve when a job starts, so the queued runs will pick up the new
+values. That reasoning is wrong, and minestreak proves it:
+
+```
+ADMOB_IOS_APP_ID set   21:30:00
+iOS job STARTED        21:49:24   <- nineteen minutes after the secret changed
+iOS job succeeded      21:55:23
+run created            19:07:50   <- before the secret changed
+binary produced        GADApplicationIdentifier = "-"
+```
+
+A job that began nineteen minutes after the update still built with the old
+value. The only thing predating the change is the **run creation**.
+
+**A run binds its secrets when it is created.** Fixing a secret does nothing for
+work already in the queue; those runs must be re-dispatched.
+
+This is a quiet failure, which is what makes it worth writing down. Nothing errors.
+The secret is genuinely fixed, the run is genuinely queued, the job genuinely
+succeeds — and an hour later it uploads a binary containing the value you
+replaced. Every intermediate signal says the problem is solved.
+
+**So: after changing a secret, re-dispatch anything already queued, and compare
+the run's `createdAt` against the secret's `updated_at` before trusting a build
+that came out of the queue.** `gh secret list` prints the timestamp, and
+`gh run list --json createdAt` prints the other.
+
+The corollary is the reason this was caught at all: **read the value back out of
+the artifact.** A secret that never reached the build looks exactly like one
+that did, from every angle except the binary:
+
+```
+plutil -extract GADApplicationIdentifier raw <App>.app/Info.plist
+```
+
+Take the reading *before* the fix as well as after. Without the before, "it says
+the right thing now" cannot be distinguished from "I was looking at a different
+artifact" — which is a mistake already made once tonight, reading a path instead
+of a bundle identifier.
