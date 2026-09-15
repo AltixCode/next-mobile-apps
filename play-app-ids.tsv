@@ -7,7 +7,7 @@ wordflock	com.altixcode.wordflock	4972776434971422690
 minestreak	com.altixcode.minestreak	4973293870522646546
 toppl	com.altixcode.toppl	4972779592764151419
 solari	com.altixcode.solari	4975431439647452569
-poplet	com.altixcode.poplet	PENDING — Play returned a generic server error, retry later
-quandary	com.altixcode.quandary	PENDING — Play returned a generic server error, retry later
-flipnest	com.altixcode.flipnest	PENDING — Play returned a generic server error, retry later
-quiktap	com.altixcode.quiktap	PENDING — Play returned a generic server error, retry later
+poplet	com.altixcode.poplet	PENDING — Play refuses with a generic server error; looks like a daily app-creation cap, retry tomorrow
+quandary	com.altixcode.quandary	PENDING — Play refuses with a generic server error; looks like a daily app-creation cap, retry tomorrow
+flipnest	com.altixcode.flipnest	PENDING — Play refuses with a generic server error; looks like a daily app-creation cap, retry tomorrow
+quiktap	com.altixcode.quiktap	PENDING — Play refuses with a generic server error; looks like a daily app-creation cap, retry tomorrow
