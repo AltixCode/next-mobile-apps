@@ -2448,6 +2448,10 @@
         "r": 0.055,
         "fill": "accentLight"
       }
+    ],
+    "androidPermissions": [
+      "android.permission.USE_EXACT_ALARM",
+      "android.permission.SCHEDULE_EXACT_ALARM"
     ]
   },
   {

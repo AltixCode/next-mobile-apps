@@ -79,7 +79,7 @@ const config: ExpoConfig = {
       'com.google.android.gms.permission.AD_ID',
       'com.android.vending.BILLING',
       'android.permission.INTERNET',
-      'android.permission.VIBRATE',
+      'android.permission.VIBRATE',{{EXTRA_ANDROID_PERMISSIONS}}
     ],
     blockedPermissions: ['android.permission.ACCESS_COARSE_LOCATION'],
   },

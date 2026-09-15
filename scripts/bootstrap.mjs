@@ -53,6 +53,15 @@ export function tokensFor(app) {
     MARK: JSON.stringify(app.mark),
     // Vector mark, or `null` for an app that still uses the legacy 5x5 grid.
     ICON: JSON.stringify(app.icon ?? null),
+    // Android permissions beyond the shared four, for the rare app that earns one.
+    //
+    // This is deliberately opt-in per app rather than a template default: Play reviews
+    // sensitive permissions against what the app actually does, so a permission granted to
+    // every app in the portfolio "just in case" is a rejection waiting to happen. Multitick
+    // declares USE_EXACT_ALARM because it is a timer; nothing else may copy it.
+    EXTRA_ANDROID_PERMISSIONS: (app.androidPermissions ?? [])
+      .map((p) => `\n      '${p}',`)
+      .join(''),
   };
 }
 
