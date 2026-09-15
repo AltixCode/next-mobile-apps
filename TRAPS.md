@@ -837,3 +837,36 @@ asserted the subject and the frame was still wrong.** First the wrong app, then
 the right app showing another app's JavaScript from a stale Metro, now the right
 app showing no JavaScript at all. Identity is necessary and it is not
 sufficient — something must also assert the screen contains the app's *content*.
+
+### A safe population is not a safe habit
+
+Running the check across every app on one simulator produced a perfectly clean
+split — and it fell along the line of **who built the app**, not what the app is:
+
+```
+built by one session   all EMBEDDED       simctl launch always worked
+built by the other     all needs-metro    simctl launch always broke
+```
+
+One session had been relaunching with `simctl launch` for hours without ever
+seeing a red box, and concluded the habit was fine. It was not fine; the
+*population* was. The other session had the identical habit on the opposite
+population and was producing red boxes. Neither would have noticed alone, and
+each would have kept not noticing for exactly as long as they stayed on their
+own half of the fleet.
+
+**When something always works, ask whether you have ever exercised the case where
+it fails.** "It has never gone wrong" is a statement about your inputs.
+
+### And the frequency was not what it looked like
+
+The red box was first read as a rare race. It was not. The relaunch sat in the
+**retry path** of the ad check — the branch taken every time a frame was rejected
+as contaminated, which was the common case, several times per app. It was
+reachable on every capture ever run. Only one reached a live listing because the
+other frames happened to pass the ad check on their first attempt and never
+entered the retry at all.
+
+A defect on a retry path is exercised precisely when something else is already
+going wrong, and its apparent rarity is the rarity of *that* first failure, not
+of the defect.
