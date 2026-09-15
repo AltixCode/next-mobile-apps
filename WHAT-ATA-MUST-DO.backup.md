@@ -706,3 +706,96 @@ that works only sometimes.
 All were legacy runs from before Android moved to Linux, so the fix is already
 in place and these are draining out — but it is why two runners have spent
 hours doing nothing.
+
+---
+
+## Update 02:10 — one more thing worth your time
+
+**Widen the RevenueCat management key's scope.** The key in `~/.zshrc` only sees
+the HushTunnel project, so the per-app public SDK keys for the rest of the
+portfolio are unreachable. Five apps — capflow, jumpcut, slideforge, syncprompt,
+voicecrisp — cannot build at all without them, and no amount of console work
+gets round it. If the key can see every project, those five become a
+straightforward job.
+
+Their AdMob **app** ids are now set (I found all five in the console). They each
+still need six ad-unit ids, two RevenueCat keys and `EXPO_TOKEN`, plus an age
+rating and a first build. They are deliberately parked behind the 29 apps whose
+only remaining blocker is App Privacy.
+
+**Progress since the last update:** every app that shipped a crashing AdMob
+identifier now has a real one — thirteen apps in total across both of us. A
+guard in `ship.py ios-submit` reads the identifier out of the built binary and
+refuses to submit anything carrying the broken value, so the rejection that
+happened tonight cannot repeat silently.
+
+---
+
+## Update 02:15 — this machine ran out of memory
+
+Swap reached **9.6 GB of 10 GB** and the system killed background work. Free
+memory was 35%.
+
+I freed what was mine (shut down a spare simulator; back to 51% free) and the
+build queue now refuses to start unless swap free is above 1.2 GB and free
+memory above 25%, as well as the CPU-load ceiling it already had. It is
+currently paused by that guard rather than by an OOM kill, which is the right
+way round.
+
+**This is a genuinely constrained machine and it is the main reason tonight took
+as long as it did.** On a 10-core box with 10 GB of swap it is running: the only
+online iOS-signing runner, local simulator builds, up to three booted
+simulators, and macOS's own MediaAnalysis, Spotlight and cryptexd at several
+hundred percent between them.
+
+Concrete, in rough order of value:
+
+1. **Wake `Atas-Work-Macbook-Pro`** — halves the iOS queue at no cost.
+2. `sudo mdutil -i off /Volumes/ExtremePro` — stop Spotlight reindexing a
+   build-output volume.
+3. Consider whether MediaAnalysis needs to be analysing the Photos library on a
+   build machine; it has been at ~200% all night.
+4. An Android emulator has been running from the external drive for hours. If it
+   is not deliberate, it is pure cost.
+
+## The size of what is actually left: 27 of 36 apps have no screenshots
+
+Regenerating the readiness report gave the first honest fleet-wide count:
+
+```
+apps with at least one screenshot:   9
+apps with none at all:              27
+```
+
+An iPad set is a **hard submission requirement** for every app here, because they
+all declare tablet support. So screenshots are not a finishing touch — they are
+most of the remaining work, and they can only be produced one app at a time, on
+a machine that is currently memory-bound.
+
+That reframes the evening's other blockers. App Privacy is still the thing that
+stops anything submitting, but even with privacy published, twenty-seven apps
+would have nothing to submit.
+
+Three apps — ratherly, ringaway and scanlit — currently have **zero** live
+screenshots because theirs were the contaminated ones and were deleted. They are
+queued for recapture.
+
+*(The readiness report had been writing nothing to disk: it prints to stdout and
+the invocation discarded it, so `READINESS.md` was stale. Fixed, and it now
+covers all 34 tracked apps including five that were silently missing from the
+inventory.)*
+
+## Machine state, because it is now the limiting factor
+
+Swap was at **9.6 GB of 10 GB** with 35% free memory, and the harness began
+killing background work. Two simulators have since been shut down — one of them
+mine — which recovered some room.
+
+The other session's build queue now refuses to start unless load is under 120,
+swap free is above 1.2 GB **and** free memory is above 25%. That is the first
+gate tonight that measures the resource which actually runs out: a load average
+says nothing about swap, and two compiles plus three simulators is a memory
+problem long before it is a CPU one.
+
+It is currently paused by its own guard, which is the right failure mode — better
+than being killed by the OOM reaper mid-build.
