@@ -821,3 +821,75 @@ resubmission needs to fix that too — and none of us can see it from here.
 
 A `REJECTED` version is editable, so the path is unchanged: attach the rebuilt
 binary, then resubmit once App Privacy is published.
+
+---
+
+## Update 02:30 — a wrong-app screenshot, caught and removed
+
+I uploaded **two screenshots of a different app to sudokly's App Store
+listing**. They are deleted; sudokly now has none.
+
+Cause: a load spike killed sudokly's build, so the app was never installed. The
+capture step ran anyway, photographed whatever was still on screen, and uploaded
+it under sudokly's name. Every check I had passed — the frames were distinct
+from each other, ad-free and correctly sized. They were good screenshots of the
+wrong product.
+
+**Every check was about the image; none was about the subject.** The capture
+step now refuses unless the target app is both installed (`simctl listapps`) and
+actually running (`launchctl list`), verified by running it against sudokly and
+watching it refuse.
+
+Nothing needed from you. Recorded because it reached your App Store account,
+briefly, and because if you ever see a listing image that looks like a different
+app, that is the mechanism.
+
+## Scale of what is left, as a number
+
+**27 of 36 apps have no screenshots at all.** An iPad set is a hard requirement
+for every one of them, and each app needs a local build before it can be
+captured — one at a time, on a machine that is also the only iOS signing runner.
+
+So screenshots are not a finishing touch; they are the bulk of the remaining
+work, and the machine is the constraint. That is the honest shape of it.
+
+**Follow-up (02:45):** the same wrong-app fault had also reached sudokly's
+in-app-purchase review screenshot — it showed a different app's paywall. Deleted.
+I audited every live IAP review screenshot across the fleet by reading the
+paywall title, which names its own app: the other seven are correct.
+
+Three guards now stand before any capture, each verified by watching it refuse:
+the app must be **installed**, **running**, and **the app in front** — the last
+read from the accessibility tree, which names the frontmost app. Nothing is
+photographed until it is established which app is on screen.
+
+
+## Screenshots deleted, and why the count went down not up
+
+Four of my apps had 25 screenshots live between them. Seven remain.
+
+```
+removed  13   contained a third-party advert with a "Test mode" badge
+removed   7   iPhone frames whose subject could not be verified
+remaining 7   all identity-checked against the app's own status bar
+```
+
+The second group needs explaining, because deleting them looks like
+vandalism. The other session discovered a capture had photographed a
+**different app** and uploaded it to the wrong listing — the build had been
+killed, the app was never installed, and the capture ran anyway. Every check
+passed: the frames were distinct and ad-free. They were good screenshots of the
+wrong product.
+
+I audited mine the same way and the iPad ones are provably correct — an iPad
+status bar carries the app's own name. **An iPhone status bar does not.** So for
+seven iPhone frames, predating both sessions, nothing could confirm whose app
+they showed. An empty set is recoverable; a wrong one on a live listing is not.
+
+**All four apps therefore need a full recapture**, iPhone and iPad, under the new
+capture mode that suppresses adverts. That is queued behind the machine, not
+behind a decision.
+
+The guard is in place so this cannot recur: a capture now refuses unless the app
+is installed, running, **and frontmost**, and the in-app-purchase screenshot
+additionally checks that the paywall on screen names the right app.
