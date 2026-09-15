@@ -893,3 +893,45 @@ behind a decision.
 The guard is in place so this cannot recur: a capture now refuses unless the app
 is installed, running, **and frontmost**, and the in-app-purchase screenshot
 additionally checks that the paywall on screen names the right app.
+
+## Exactly what each a–m app still needs
+
+Read live from App Store Connect, not inferred:
+
+```
+app          state                   bld iph ipad  IAP               still needs
+calcpair     PREPARE_FOR_SUBMISSION   1   0   0   MISSING_METADATA   screenshots, IAP shot, privacy
+capflow      PREPARE_FOR_SUBMISSION   0   0   0   MISSING_METADATA   BUILD, screenshots, IAP shot, privacy
+convertwise  PREPARE_FOR_SUBMISSION   1   0   0   MISSING_METADATA   screenshots, IAP shot, privacy
+dicewit      PREPARE_FOR_SUBMISSION   1   0   0   MISSING_METADATA   screenshots, IAP shot, privacy
+flipnest     PREPARE_FOR_SUBMISSION   2   0   0   MISSING_METADATA   screenshots, IAP shot, privacy
+foldup       REJECTED                 3   0   1   READY_TO_SUBMIT    iPhone shots, privacy
+jumpcut      PREPARE_FOR_SUBMISSION   0   0   0   MISSING_METADATA   BUILD, screenshots, IAP shot, privacy
+klondo       PREPARE_FOR_SUBMISSION   1   0   0   MISSING_METADATA   screenshots, IAP shot, privacy
+knotter      REJECTED                 2   0   2   READY_TO_SUBMIT    iPhone shots, privacy
+loopwits     REJECTED                 2   0   4   READY_TO_SUBMIT    iPhone shots, privacy
+memoflip     PREPARE_FOR_SUBMISSION   1   0   0   MISSING_METADATA   screenshots, IAP shot, privacy
+mergewit     PREPARE_FOR_SUBMISSION   1   0   0   MISSING_METADATA   screenshots, IAP shot, privacy
+minestreak   PREPARE_FOR_SUBMISSION   3   0   1   READY_TO_SUBMIT    iPhone shots, privacy
+multitick    PREPARE_FOR_SUBMISSION   1   0   0   MISSING_METADATA   screenshots, IAP shot, privacy
+```
+
+**Not one a–m app has an iPhone screenshot.** Four have an iPad one. Every app
+needs both sets.
+
+Four are otherwise in good shape — foldup, knotter, loopwits, minestreak have a
+ready in-app purchase and some iPad screenshots. Three of those four are the
+rejected ones, so they also need the fixed binary attached, which is queued.
+
+The good news in the table: **in-app-purchase availability is present on every
+a–m app**, so the eight showing `MISSING_METADATA` need only their review
+screenshot — one capture each, not a provisioning exercise.
+
+Two apps — capflow and jumpcut — have **no build at all**, because they are among
+the five whose AdMob and RevenueCat secrets are missing.
+
+### The shape of it
+
+Every single row ends in App Privacy. Nothing here submits without it, however
+many screenshots we capture. Everything else on this list is work the two
+sessions can do; that one is not.
