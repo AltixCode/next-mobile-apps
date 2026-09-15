@@ -799,3 +799,25 @@ problem long before it is a CPU one.
 
 It is currently paused by its own guard, which is the right failure mode — better
 than being killed by the OOM reaper mid-build.
+
+## Two things checked this pass, one good and one you may want to read
+
+**Store metadata is complete for every a–m app.** Description, keywords, support
+URL and promotional text are all set on all fourteen. `whatsNew` is empty
+everywhere, which is correct — Apple only requires it for an update, not for a
+1.0.0 release. So metadata is not a blocker for any of them and needs no work.
+
+**The rejection reason is not readable through the API.** foldup's review
+submission is `UNRESOLVED_ISSUES` with two items — one `REJECTED`, one still
+`READY_FOR_REVIEW` — but the message itself lives in **Resolution Center**, which
+App Store Connect exposes only in its web interface.
+
+If you open any of knotter, foldup, loopwits or poursort in App Store Connect and
+look at Resolution Center, you will see exactly what Apple said. It is worth two
+minutes: everything we know points at the crash on launch, and the binaries we
+read do carry `GADApplicationIdentifier = "-"`, but that is inference from the
+artifact rather than Apple's own words. If they cited something else as well, the
+resubmission needs to fix that too — and none of us can see it from here.
+
+A `REJECTED` version is editable, so the path is unchanged: attach the rebuilt
+binary, then resubmit once App Privacy is published.
