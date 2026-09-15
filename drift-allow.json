@@ -30,5 +30,8 @@
   ],
   "scanlit": [
     "jest.setup.js"
+  ],
+  "trilite": [
+    "jest.setup.js"
   ]
 }
