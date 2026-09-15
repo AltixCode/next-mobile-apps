@@ -29,6 +29,7 @@ step() { printf '\n\033[1m▸ %s\033[0m\n' "$1"; }
 fail() { printf '\n\033[31m✗ %s\033[0m\n' "$1"; exit 1; }
 
 cleanup() {
+  [ -n "${METRO_PID:-}" ] && kill "$METRO_PID" >/dev/null 2>&1 || true
   adb -s emulator-5554 emu kill >/dev/null 2>&1 || true
   pkill -f "qemu-system" >/dev/null 2>&1 || true
   rm -f "$HOME/.android/avd/"*.avd/*.lock 2>/dev/null || true
@@ -46,10 +47,21 @@ adb wait-for-device
 until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; do sleep 2; done
 adb reverse tcp:8081 tcp:8081 || true
 
+step 'Starting Metro separately'
+# `expo run:android` without --no-bundler starts the bundler in the FOREGROUND and never
+# returns, so a script that waits for it waits forever — after a build that succeeded and an
+# app that launched. Metro is started here instead, and the build is told not to start one.
+npx expo start --port 8081 >"$OUT/metro.log" 2>&1 &
+METRO_PID=$!
+for _ in $(seq 1 60); do
+  grep -q "Waiting on http://localhost:8081" "$OUT/metro.log" && break
+  sleep 1
+done
+
 step 'Building and installing on Android'
 # `-d` takes the AVD *name*, not the adb serial: passing `emulator-5554` fails with
 # "Could not find device with name", which reads like the emulator never booted.
-if ! npx expo run:android -d "$AVD" >"$OUT/android-build.log" 2>&1; then
+if ! npx expo run:android -d "$AVD" --no-bundler >"$OUT/android-build.log" 2>&1; then
   tail -40 "$OUT/android-build.log"
   fail 'the Android build failed — any app already on the device is the OLD one'
 fi
@@ -58,6 +70,14 @@ step 'Launching on Android'
 adb shell am start -n "${BUNDLE_ID}/.MainActivity" >/dev/null
 sleep 8
 adb shell pidof "$BUNDLE_ID" >/dev/null || fail 'the app is not running after launch'
+# The app reaching its ad bootstrap is the first evidence that JS actually ran, rather than
+# the process merely existing. A missing consent line and a live pid is a white screen.
+for _ in $(seq 1 30); do
+  grep -q '\[ads\] consent' "$OUT/metro.log" && break
+  sleep 1
+done
+grep -q '\[ads\] consent' "$OUT/metro.log" \
+  || fail 'the app launched but its JS never reached the ad bootstrap'
 adb exec-out screencap -p > "$OUT/android-launch.png"
 printf '  screenshot: %s\n' "$OUT/android-launch.png"
 
@@ -66,6 +86,8 @@ printf '  the emulator stays up for the feature walk; see HANDOFF.md\n'
 
 # ------------------------------------------------------------------- iOS
 step 'Freeing the machine before Xcode'
+[ -n "${METRO_PID:-}" ] && kill "$METRO_PID" >/dev/null 2>&1 || true
+METRO_PID=""
 adb -s emulator-5554 emu kill >/dev/null 2>&1 || true
 ./android/gradlew --stop >/dev/null 2>&1 || true
 sleep 3
