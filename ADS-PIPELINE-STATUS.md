@@ -94,3 +94,30 @@ like the app re-requesting — `simctl shutdown` then `boot` clears it. And
 simulator screenshots carry an alpha channel, which App Store Connect accepts
 and then silently leaves in FAILED with `IMAGE_ALPHA_NOT_ALLOWED`; flatten
 before uploading and verify `assetState` is COMPLETE by listing the set back.
+
+## Driving the AdMob console
+
+AdMob has no public write API, so everything here is the signed-in console
+driven from a browser. Four things cost hours between the two sessions:
+
+- **`element.click()` does nothing useful on its Material components.** A DOM
+  click appears to succeed and the dialog just closes. `page.mouse.click()` at
+  the element's bounding-box centre works. This is the one that looks like a
+  broken UI and is actually a click that never landed.
+- **A virtualised table's "nothing left on screen" is not "nothing left".**
+  Re-sweep from the top until a full-range pass reads zero missing; a single
+  pass over 89 rows left two behind.
+- **The accessibility snapshot cannot see inside the messaging iframe**, which
+  makes the builder look unreachable. `page.frames().find(f =>
+  f.url().includes('display-ads-user-messaging-embed'))` gives a real frame
+  with working locators.
+- **Publish can sit `aria-disabled` with no explanation.** The cause was
+  *User choices → Do not consent* being unset, not the privacy policy URLs
+  everything else complains about. It is a per-country dialog with a master
+  toggle in the header row.
+
+The privacy policy URL is **client-side state, not an RPC** — typing one fires
+no network request and it is committed at Publish with everything else. There
+is nothing to capture and replay.
+
+*Worked out by dev-7b; recorded here so the next person does not re-derive it.*
