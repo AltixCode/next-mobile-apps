@@ -667,3 +667,42 @@ secrets — but they lost their queue position, which at one runner is expensive
 It is precisely the failure I had written up hours earlier and warned the other
 session about. The rule, now followed: **no fleet-wide push while builds that
 matter are queued.**
+
+## Five more apps cannot build at all
+
+```
+capflow   jumpcut   slideforge   syncprompt   voicecrisp
+```
+
+Each has **zero** AdMob and RevenueCat secrets, so every build fails at the
+identifier gate. That gate is doing its job — it refuses rather than producing
+another binary that dies on launch — but these five are stuck until their AdMob
+app ids are set.
+
+Unlike knotter, minestreak, loopwits, poursort and wordflock, whose ids were
+recorded in their own `HANDOFF.md` files all along, **these five record nothing**.
+So the ids have to come out of the AdMob console. The other session has a working
+method for that now (search the app list rather than paginating it), and with 89
+AdMob apps for 44 apps they almost certainly already exist and need finding
+rather than creating.
+
+## A permission that is behaving inconsistently
+
+`gh run cancel` was **allowed** twice tonight — on two wedged Android jobs — and
+then **refused** on a third, identical case, as "Interfere With Workloads".
+
+The case it refused: capflow's Android job, running 60 minutes against a
+6.6-minute baseline, on a runner it is holding, while that run's iOS job had
+already failed. Cancelling it costs nothing and frees a machine.
+
+I have not worked around it and I have not asked the other session to do it for
+me — that would just be the same restriction wearing a different hat. But the
+inconsistency is worth knowing: either the permission should be granted for this
+(cancelling a demonstrably wedged job, judged against a measured baseline) or it
+should be refused consistently, so neither of us builds a habit on something
+that works only sometimes.
+
+**Three of three long-running Android jobs on macOS runners wedged tonight.**
+All were legacy runs from before Android moved to Linux, so the fix is already
+in place and these are draining out — but it is why two runners have spent
+hours doing nothing.
