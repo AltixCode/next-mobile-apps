@@ -576,3 +576,94 @@ made on your behalf about what your apps collect, and one agent's permissions
 happening to allow it is not your consent. If you confirm those six rows are
 accurate, either of us can apply them to all the apps mechanically — but that is
 your sentence to say, not ours to assume.
+
+---
+
+# STATE AT 01:35 — read this part first
+
+## The one thing blocking every submission
+
+**App Privacy is un-started on every app that has not already been submitted**,
+and my permission guard refuses to write it. Details and the exact six answers
+are in the section above. Nothing else stands between these apps and review.
+
+Everything else that was blocking has been fixed:
+
+| Gate | State |
+|---|---|
+| Age rating questionnaire | **done, all 29 apps** (was missing on 23) |
+| Privacy Policy URL | **done, all 29 apps** (was missing on 24) |
+| IAP territory availability | **done** (was missing on 22) |
+| AdMob app ids | **done, all 8 broken apps** |
+| iPhone screenshots | in progress |
+| iPad screenshots | in progress — **required**, not optional |
+| IAP review screenshot | in progress |
+
+## What happened to the four rejected apps
+
+knotter, foldup, loopwits and poursort were rejected because their binaries
+crashed on launch (`GADApplicationIdentifier = "-"`). Their ids are fixed and
+rebuilds are queued. They need: new build attached, screenshots, App Privacy,
+resubmit.
+
+## A caution about screenshots
+
+Store screenshots captured from a debug build can contain **Google test
+adverts**, including ones with a "Test mode" badge. Between us we found and
+deleted **21 contaminated images** that were live in App Store Connect. None
+reached review.
+
+Two automated detectors were written and **both produce false results** — one
+misses coloured adverts, the other flags apps whose own palette is colourful.
+Every screenshot now goes up only after being looked at. If you see a listing
+image you do not recognise, tell me and I will pull it.
+
+## Nothing is submitted yet
+
+To be plain: **zero apps are in review right now.** Four were, and were
+rejected. The rest cannot be submitted until App Privacy is published.
+
+## A standing readiness table
+
+`Dev/READINESS.md` shows, per app: attached build, iPhone and iPad screenshot
+counts, age rating, privacy-policy URL and IAP state. Regenerate any time with:
+
+    python3 scripts/ship/readiness-report.py
+
+It deliberately does **not** show App Privacy, because no public API exposes it —
+assume unpublished until someone checks the console. Age rating and
+privacy-policy URL now read green for all 29 apps; those were the two I could
+fix without you.
+
+## The queue arithmetic, now that it can be measured
+
+```
+queued deploy runs        80
+queued CI runs            30   (cancelled — see below)
+online iOS-signing runners  1   (of two; the laptop is asleep)
+median successful iOS build  7.5 min
+```
+
+**80 builds on one runner is about 10 hours.** With the second signing runner
+awake it is about five. That is the whole case for `Atas-Work-Macbook-Pro`: it is
+not a tidiness item, it is half the remaining wait.
+
+**I cancelled the 30 queued CI runs.** `ci.yml` asks for `[self-hosted, ARM64]`,
+which only the macOS machines satisfy — the Hetzner runner is x64 and the ARM
+Linux container is offline — so every CI run was competing for the one machine
+that can produce an iOS binary. CI re-runs on the next push, and lint and tests
+had already passed locally, so this cost nothing and freed the scarce resource
+for builds that fix rejected apps.
+
+### One mistake of mine, since it cost real time
+
+I pushed capture mode to all 30 repositories, which **cancelled all eight
+in-flight rebuilds** and sent them to the back of the queue. The
+`concurrency: release-<repo>` group keeps one pending run per repository, so a
+push supersedes a queued build.
+
+Nothing was lost — the replacement runs carry the same fixes and the correct
+secrets — but they lost their queue position, which at one runner is expensive.
+It is precisely the failure I had written up hours earlier and warned the other
+session about. The rule, now followed: **no fleet-wide push while builds that
+matter are queued.**
