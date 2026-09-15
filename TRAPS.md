@@ -514,11 +514,24 @@ visible to idb, so this is specific to the UMP sheet. **Screenshot and look; use
 
 **A tap that hits a label still produces a valid screenshot — of the previous
 screen.** "Your answers" was a heading rather than a button, so the navigation
-never happened, and the capture wrote two byte-identical PNGs and reported both
-as successes. Nothing failed: the tap landed, the screenshot was taken, the file
-was written. The capture script now hashes each shot and discards duplicates,
-because comparing file sizes by eye does not scale to two dozen apps — and a
-store listing carrying the same image twice is a rejection, not a blemish.
+never happened. The capture wrote two byte-identical PNGs and reported both as
+successes.
+
+Nothing failed, and that is the point. The tap landed on a real element. The
+screenshot was taken. The PNG was valid and correctly sized. Every step
+returned success, and the check was passing without checking anything — the
+same shape as an `adPolicy` test that passes while its call site is dead code,
+and as a paywall gate that reads an i18n file an app does not have.
+
+The fix is to assert the property rather than the step: hash each shot and
+refuse duplicates. Comparing file sizes by eye caught it once and does not
+scale to two dozen apps, and a store listing carrying the same image twice is
+a rejection rather than a blemish.
+
+**The general rule for a capture: a screenshot proves the harness ran, never
+that it went where it was told.** Assert on what distinguishes the screens —
+a hash, an element that exists only on the destination — before believing the
+navigation happened.
 
 The common shape, and the reason this sits beside traps #15 and #16: **every one
 of these is a check that ran and passed without checking the thing it was for.**
