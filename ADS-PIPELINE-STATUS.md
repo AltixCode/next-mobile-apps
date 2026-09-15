@@ -8,7 +8,7 @@ Legend: ✅ done · 🔨 in progress · ⬜ not started · ⛔ blocked
 | # | App | Repo | Scaffold | RevenueCat | Secrets | AdMob | Logic | UI | ASC | Play | iOS QA | Android QA |
 |---|-----|------|----------|-----------|---------|-------|-------|----|-----|------|--------|-----------|
 | 1 | Convertwise | AltixCode/convertwise | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ✅ | ✅ |
-| 2 | Calcpair | AltixCode/calcpair | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 2 | Calcpair | AltixCode/calcpair | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | 🔨 | 🔨 |
 | 3 | Splitjar | AltixCode/splitjar | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 4 | Spinwit | AltixCode/spinwit | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 5 | Multitick | AltixCode/multitick | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
@@ -59,3 +59,38 @@ Legend: ✅ done · 🔨 in progress · ⬜ not started · ⛔ blocked
 `ads-bundle-ids.tsv`, `ads-revenuecat-ids.tsv`. The RevenueCat public SDK keys
 are not recorded in the repo — they are set directly as GitHub Actions secrets
 (`EXPO_PUBLIC_REVENUECAT_IOS_KEY` / `_ANDROID_KEY`) on each app's repository.
+
+## Device verification on this machine
+
+`npm run verify:device` now works end to end. Four defects had to be fixed in
+the shared script first, each of which made the gate lie rather than fail:
+
+- It hung forever after a **successful** Android build, because
+  `expo run:android` without `--no-bundler` starts Metro in the foreground and
+  never returns. The build had worked, the app had launched and logged
+  `[ads] consent`, and the script sat there.
+- `-d` takes the AVD **name**, not the adb serial. `emulator-5554` fails with
+  "Could not find device with name", which reads like the emulator never booted.
+- The UIScene death check searched the device log for a string and matched its
+  own search: `log show` logs its invocation with arguments, so the predicate
+  text is always in the output. It fired on every healthy app.
+- `expo run:ios` exits non-zero on this machine even when the build, signing
+  and install all succeeded, because Simulator.app is missing from this Xcode
+  and its last step is to open it. Success is now judged by whether the app is
+  installed.
+
+### Tapping iOS at last
+
+Simulator.app being absent meant there was no way to tap anything on iOS, so
+every interactive check in this portfolio has been driven on Android and the
+ATT prompt had never been exercised. `scripts/idb-tap.sh` fixes that with idb,
+tapping by accessibility label rather than coordinate — points differ between a
+phone and a 13" iPad, so a coordinate script needs rewriting per device and a
+label script does not.
+
+Two things to know: an undismissed ATT prompt is owned by SpringBoard and
+survives app termination, so it sits on top of every later screenshot and looks
+like the app re-requesting — `simctl shutdown` then `boot` clears it. And
+simulator screenshots carry an alpha channel, which App Store Connect accepts
+and then silently leaves in FAILED with `IMAGE_ALPHA_NOT_ALLOWED`; flatten
+before uploading and verify `assetState` is COMPLETE by listing the set back.
