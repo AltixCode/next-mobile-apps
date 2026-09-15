@@ -24,5 +24,8 @@
   ],
   "klondo": [
     "app/settings.tsx"
+  ],
+  "tapforge": [
+    "app/settings.tsx"
   ]
 }
