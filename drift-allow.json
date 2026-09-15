@@ -1,5 +1,5 @@
 {
-  "//": "Generated files an app is meant to own. Anything not listed here and differing from _template is a finding \u2014 see scripts/check-drift.mjs. '*' applies to every app.",
+  "//": "Generated files an app is meant to own. Anything not listed here and differing from _template is a finding — see scripts/check-drift.mjs. '*' applies to every app.",
   "*": [
     "HANDOFF.md",
     "CLAUDE.md",
@@ -11,5 +11,9 @@
     "package.json",
     "package-lock.json",
     "app/_layout.tsx"
+  ],
+  "loopwits": [
+    "src/theme/tokens.ts",
+    "src/theme/__tests__/color.test.ts"
   ]
 }
