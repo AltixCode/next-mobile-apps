@@ -7,7 +7,8 @@
     "pitch": "three daily logic puzzles under one streak",
     "engines": "Rulers (region placement), Duo (binary grid), OneLine (Hamiltonian path)",
     "freeTier": "archive limited to the last 7 days; 1 hint per puzzle per day",
-    "screens": "hub, play (all three types), archive, stats, settings, paywall"
+    "screens": "hub, play (all three types), archive, stats, settings, paywall",
+    "store": "submitted — version 1.0.0 and the IAP are both WAITING_FOR_REVIEW"
   },
   "poursort": {
     "stage": "built",
@@ -17,7 +18,8 @@
     "pitch": "pour until every tube holds one colour",
     "engines": "pour rules, BFS solver keyed on order-independent states, reverse-scramble generator",
     "freeTier": "levels 1-40; 1 hint per level",
-    "screens": "level select, play, settings, paywall"
+    "screens": "level select, play, settings, paywall",
+    "store": "metadata, IAP, price, availability and privacy all done; needs screenshots and a build"
   },
   "foldup": {
     "stage": "built",
@@ -27,7 +29,8 @@
     "pitch": "lift a tile, drop it on its twin",
     "engines": "board rules, clearability search, unmerge-backwards generator",
     "freeTier": "levels 1-30; 1 hint per level",
-    "screens": "level select, play, settings, paywall"
+    "screens": "level select, play, settings, paywall",
+    "store": "metadata, IAP, price, availability and privacy all done; needs screenshots and a build"
   },
   "knotter": {
     "stage": "built",
@@ -37,7 +40,8 @@
     "pitch": "one cord per colour pair, filling every cell",
     "engines": "Numberlink rules, uniqueness solver, carve-then-keep-the-ends generator, drag logic",
     "freeTier": "levels 1-50; 1 hint per level",
-    "screens": "level select, play, settings, paywall"
+    "screens": "level select, play, settings, paywall",
+    "store": "metadata, IAP, price, availability and privacy all done; needs screenshots and a build"
   },
   "minestreak": {
     "stage": "built",
@@ -47,17 +51,20 @@
     "pitch": "one fair minesweeper board a day, never a 50/50",
     "engines": "board rules, no-guess deduction solver (single-point + subset), reject-until-solvable generator",
     "freeTier": "archive limited to the last 7 days; 1 hint per board",
-    "screens": "home, play, archive, stats, settings, paywall"
+    "screens": "home, play, archive, stats, settings, paywall",
+    "store": "metadata, IAP, price, availability and privacy all done; needs screenshots and a build"
   },
   "wordflock": {
-    "stage": "scaffold",
-    "tests": 186,
+    "stage": "logic",
+    "tests": 264,
     "device": "none",
     "plan": "PLAN.md §5",
     "pitch": "sixteen words, four hidden groups, four mistakes",
     "engines": "guess evaluation, one-away detection, curated puzzle bank",
     "freeTier": "archive last 7 days, themed packs behind the unlock",
-    "screens": "template only: home placeholder, settings, paywall"
+    "screens": "template only: home placeholder, settings, paywall",
+    "store": "metadata, IAP, price, availability and privacy all done; needs screens and content",
+    "note": "Logic layer done (puzzle validation, guess rules, daily mapping, share grid). The puzzle bank is 30 entries — one month — which repeats monthly and is NOT shippable as a daily. Screens not built."
   },
   "toppl": {
     "stage": "scaffold",
@@ -67,7 +74,8 @@
     "pitch": "a block swings overhead; tap to drop and stack it clean",
     "engines": "swing/drop physics, overhang trimming, scoring",
     "freeTier": "one free continue per run",
-    "screens": "template only: home placeholder, settings, paywall"
+    "screens": "template only: home placeholder, settings, paywall",
+    "store": "metadata pending; IAP, price, availability and privacy all done"
   },
   "solari": {
     "stage": "scaffold",
@@ -77,7 +85,8 @@
     "pitch": "one Klondike deal a day, guaranteed winnable",
     "engines": "deck/deal, move rules, winnability search",
     "freeTier": "archive last 7 days, unlimited undo behind the unlock",
-    "screens": "template only: home placeholder, settings, paywall"
+    "screens": "template only: home placeholder, settings, paywall",
+    "store": "metadata pending; IAP, price, availability and privacy all done"
   },
   "poplet": {
     "stage": "scaffold",
@@ -87,7 +96,8 @@
     "pitch": "aim, shoot, pop three or more of a colour",
     "engines": "hex grid, aim/bounce, cluster pop and orphan drop",
     "freeTier": "levels 1-40",
-    "screens": "template only: home placeholder, settings, paywall"
+    "screens": "template only: home placeholder, settings, paywall",
+    "store": "metadata pending; IAP, price, availability and privacy all done"
   },
   "quandary": {
     "stage": "scaffold",
@@ -97,7 +107,8 @@
     "pitch": "five questions a day, the same five for everyone",
     "engines": "question bank, daily selection, scoring",
     "freeTier": "archive last 7 days, category packs behind the unlock",
-    "screens": "template only: home placeholder, settings, paywall"
+    "screens": "template only: home placeholder, settings, paywall",
+    "store": "metadata pending; IAP, price, availability and privacy all done"
   },
   "flipnest": {
     "stage": "scaffold",
@@ -107,7 +118,8 @@
     "pitch": "flip cards, find the pairs, one themed board a day",
     "engines": "deal, flip/match state machine, theme packs",
     "freeTier": "archive last 7 days, theme packs behind the unlock",
-    "screens": "template only: home placeholder, settings, paywall"
+    "screens": "template only: home placeholder, settings, paywall",
+    "store": "metadata pending; IAP, price, availability and privacy all done"
   },
   "quiktap": {
     "stage": "scaffold",
@@ -117,6 +129,7 @@
     "pitch": "a thirty-second daily reaction and focus test",
     "engines": "reaction timing, test types, percentile history",
     "freeTier": "the daily three; every test type behind the unlock",
-    "screens": "template only: home placeholder, settings, paywall"
+    "screens": "template only: home placeholder, settings, paywall",
+    "store": "metadata pending; IAP, price, availability and privacy all done"
   }
 }

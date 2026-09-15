@@ -165,7 +165,8 @@ Portfolio rules: \`Dev/AGENTS.md\`, then \`Dev/docs/agents/18-app-lifecycle.md\`
 | Stage | ${s.stage === 'built' ? '**Feature-complete**, not yet released' : '**Scaffold only** — the game is not written'} |
 | Tests | ${s.tests} passing |
 | Device pass | ${s.device === 'verified' ? '✅ built, launched and driven on iOS simulator + Android emulator' : '⬜ never run'} |
-| Released | ⬜ no |
+| App Store | ${s.store ?? '⬜ nothing done'} |
+| Released | ⬜ no |${s.note ? `\n\n> **${s.note}**` : ''}
 
 ## Verification state
 
