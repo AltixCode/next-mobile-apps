@@ -18,5 +18,8 @@
   ],
   "dicewit": [
     "app/settings.tsx"
+  ],
+  "mergewit": [
+    "app/settings.tsx"
   ]
 }
