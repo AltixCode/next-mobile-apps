@@ -92,22 +92,37 @@ adb -s emulator-5554 emu kill >/dev/null 2>&1 || true
 ./android/gradlew --stop >/dev/null 2>&1 || true
 sleep 3
 
+step 'Booting the iOS simulator'
+# A device set can go stale and report a device as available that CoreSimulator then refuses
+# to boot with "Unable to boot deleted device". Pruning first costs a second and removes a
+# failure that reads like a broken Xcode.
+xcrun simctl delete unavailable >/dev/null 2>&1 || true
+UDID="$(xcrun simctl list devices available -j | python3 -c 'import json,sys;d=json.load(sys.stdin)["devices"];print(next((x["udid"] for k,v in d.items() if "iOS" in k for x in v if x["name"].startswith("iPhone")), ""))')"
+[ -n "$UDID" ] || fail 'no iOS simulator is available'
+xcrun simctl boot "$UDID" >/dev/null 2>&1 || true
+until [ "$(xcrun simctl list devices -j | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];print(next((x['state'] for v in d.values() for x in v if x['udid']=='$UDID'), ''))")" = "Booted" ]; do sleep 2; done
+
 step 'Building and installing on the iOS simulator'
-if ! npx expo run:ios --configuration Release >"$OUT/ios-build.log" 2>&1; then
+# This install SUCCEEDS and the command still exits non-zero: Simulator.app is missing from
+# this Xcode install, so expo's final "open the simulator" step always fails. The build's own
+# success is therefore judged by whether the app is installed, not by the exit code.
+npx expo run:ios --configuration Release --device "$UDID" >"$OUT/ios-build.log" 2>&1 || true
+if ! xcrun simctl get_app_container "$UDID" "$BUNDLE_ID" >/dev/null 2>&1; then
   tail -40 "$OUT/ios-build.log"
-  fail 'the iOS build failed'
+  fail 'the iOS build failed — the app is not installed on the simulator'
 fi
-
-UDID="$(xcrun simctl list devices booted -j | python3 -c 'import json,sys;d=json.load(sys.stdin)["devices"];print(next((x["udid"] for v in d.values() for x in v if x["state"]=="Booted"), ""))')"
-[ -n "$UDID" ] || fail 'no booted simulator'
-
 step 'Launching on iOS and checking it reaches first frame'
 xcrun simctl terminate "$UDID" "$BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl launch "$UDID" "$BUNDLE_ID" >/dev/null
 sleep 8
 # iOS 26+ quits straight back to the home screen without UIScene adoption, and
 # the only trace is this device-log line.
-if xcrun simctl spawn "$UDID" log show --last 1m --predicate 'eventMessage CONTAINS "UIScene life cycle is required"' 2>/dev/null | grep -q "UIScene life cycle"; then
+# `log show` logs its OWN invocation, arguments included, so a predicate searching for this
+# string always matches the search itself. Filtering the `log` process out is what makes the
+# check mean anything; without it this gate fails every run, on every healthy app.
+if xcrun simctl spawn "$UDID" log show --last 1m \
+     --predicate 'eventMessage CONTAINS "UIScene life cycle is required" AND process != "log"' \
+     --style compact 2>/dev/null | grep -q "UIScene life cycle"; then
   fail 'the app died on launch: UIScene adoption is missing (plugins/withUIScene)'
 fi
 xcrun simctl io "$UDID" screenshot "$OUT/ios-light.png"
