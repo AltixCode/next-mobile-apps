@@ -311,3 +311,41 @@ while the *run* is in progress, even when the job you care about finished
 minutes ago. `gh api /repos/<repo>/actions/jobs/<job_id>/logs` serves a finished
 job's log immediately, and needs `--allow-escape-sequences` plus a
 `sed 's/\x1b\[[0-9;]*m//g'` to be readable.
+
+---
+
+## 15. Two states sharing a fill is not yet a defect
+
+A scan that compares the two `backgroundColor` values of a two-state control
+and flags the pair below 3:1 finds real bugs — and mostly finds false ones. Of
+six such hits across the portfolio, **one was genuine**.
+
+Dicewit's scorecard was the genuine one: a used category differed from an unused
+one by 1.13:1 **and nothing else** — worse, its label was dimmed with
+`tone="muted"`, so the single fact a scorecard exists to convey was the least
+legible thing on screen.
+
+The other five were not:
+
+| App | Fill pair | What actually marks the state |
+|---|---|---|
+| knotter | 1.09 | accent border, 5.34–6.87:1, plus a star row |
+| foldup | 1.11 | accent border, 4.44–10.50:1 |
+| poursort | 1.15 | accent border, 4.73–9.42:1 |
+| loopwits | 1.11 | not two states at all — two sibling nav buttons |
+
+Loopwits is the sharpest lesson: the two fills the scan compared belong to the
+Archive and Settings buttons. They are the same colour because they are the
+same state. The scan had inferred a state machine that does not exist.
+
+**WCAG 1.4.11 asks whether the state is distinguishable, not whether the fill
+carries it.** A border, an icon, a badge or a text change are each a complete
+answer. So before reporting a fill pair, name the control, enumerate *every*
+channel that differs between its states, and measure those. Reporting the fill
+alone sends someone to repaint a control that was already correct — and
+`tone="muted"` on a state that is information rather than a disabled control is
+the defect worth looking for instead.
+
+Same shape as the Ringaway `avatar: {width:132,height:132}` false positive: a
+scan matched a pattern, not the property the pattern was a proxy for. See
+trap #12 — name the thing you are measuring.
