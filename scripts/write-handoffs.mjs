@@ -61,7 +61,8 @@ function ciState(slug) {
     );
     const run = JSON.parse(out)[0];
     if (!run) return '⬜ no run recorded';
-    if (run.status !== 'completed') return '🔨 a run is in progress — check before trusting this row';
+    if (run.status !== 'completed')
+      return '🔨 running when this was written — re-check with `gh run list`';
     if (run.conclusion === 'success') return '✅ green on `main`';
     if (run.conclusion === 'failure') return '❌ failing on `main` — fix before anything else';
     return `⬜ last run ${run.conclusion} — never proven green`;
@@ -129,8 +130,16 @@ What the scaffold already gives you, working and tested (${s.tests} tests):
 }
 
 let written = 0;
+const skipped = [];
 for (const app of apps) {
   const s = state[app.slug];
+  // `apps.json` is shared and has grown beyond this initiative. An app with no
+  // entry in app-state.json belongs to someone else's batch; describing it here
+  // would mean inventing its state, so it is named and skipped instead.
+  if (!s) {
+    skipped.push(app.slug);
+    continue;
+  }
   const rc = revenuecat[app.slug] ?? {};
   const ad = admob(app.slug);
   const ci = ciState(app.slug);
@@ -266,3 +275,8 @@ for a few days. That is normal, not an integration fault.
   written += 1;
 }
 console.log(`wrote ${written} HANDOFF.md files`);
+if (skipped.length > 0) {
+  console.log(
+    `skipped ${skipped.length} app(s) with no entry in app-state.json: ${skipped.join(', ')}`,
+  );
+}
