@@ -6,8 +6,11 @@
     "bundle": "com.altixcode.loopwits",
     "planFile": "PLAN.md",
     "tagline": "Three tiny logic puzzles a day. One streak.",
-    "accent": "#8B7BFF", "accentLight": "#6D4DF2",
-    "bg": "#0B0B12", "surface": "#15151F", "surfaceAlt": "#1F1F2C",
+    "accent": "#8B7BFF",
+    "accentLight": "#6D4DF2",
+    "bg": "#0B0B12",
+    "surface": "#15151F",
+    "surfaceAlt": "#1F1F2C",
     "benefits": [
       "The full puzzle archive, every day back to launch",
       "No ads, ever",
@@ -15,11 +18,41 @@
       "Detailed streak and solve-time stats"
     ],
     "mark": [
-      [0.12, 1.0, 1.0, 1.0, 0.12],
-      [1.0, 0.12, 0.12, 0.12, 1.0],
-      [1.0, 0.12, 0.45, 0.12, 1.0],
-      [1.0, 0.12, 0.12, 0.12, 1.0],
-      [0.12, 1.0, 1.0, 1.0, 0.12]
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        1,
+        0.12,
+        0.45,
+        0.12,
+        1
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ]
     ]
   },
   {
@@ -29,8 +62,11 @@
     "bundle": "com.altixcode.poursort",
     "planFile": "PLAN.md",
     "tagline": "Pour until every tube holds one colour. No timer, no fail state.",
-    "accent": "#22D3EE", "accentLight": "#0E7490",
-    "bg": "#07141A", "surface": "#0F1E26", "surfaceAlt": "#172A33",
+    "accent": "#22D3EE",
+    "accentLight": "#0E7490",
+    "bg": "#07141A",
+    "surface": "#0F1E26",
+    "surfaceAlt": "#172A33",
     "benefits": [
       "Every level unlocked — 400+ and growing",
       "No ads, ever",
@@ -38,11 +74,41 @@
       "The daily challenge archive"
     ],
     "mark": [
-      [1.0, 0.12, 0.45, 0.12, 1.0],
-      [1.0, 0.12, 0.45, 0.12, 1.0],
-      [1.0, 0.45, 1.0, 0.45, 1.0],
-      [1.0, 1.0, 1.0, 1.0, 1.0],
-      [0.45, 1.0, 1.0, 1.0, 0.45]
+      [
+        1,
+        0.12,
+        0.45,
+        0.12,
+        1
+      ],
+      [
+        1,
+        0.12,
+        0.45,
+        0.12,
+        1
+      ],
+      [
+        1,
+        0.45,
+        1,
+        0.45,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0.45,
+        1,
+        1,
+        1,
+        0.45
+      ]
     ]
   },
   {
@@ -52,8 +118,11 @@
     "bundle": "com.altixcode.foldup",
     "planFile": "PLAN.md",
     "tagline": "Lift a tile, drop it on its twin. One clean rule.",
-    "accent": "#FBBF24", "accentLight": "#B45309",
-    "bg": "#12100A", "surface": "#1C1913", "surfaceAlt": "#26221A",
+    "accent": "#FBBF24",
+    "accentLight": "#B45309",
+    "bg": "#12100A",
+    "surface": "#1C1913",
+    "surfaceAlt": "#26221A",
     "benefits": [
       "Every level unlocked — 300+ hand-balanced boards",
       "No ads, ever",
@@ -61,11 +130,41 @@
       "Free hints, no ad to watch"
     ],
     "mark": [
-      [1.0, 1.0, 1.0, 1.0, 0.12],
-      [1.0, 0.45, 0.45, 1.0, 0.12],
-      [1.0, 0.45, 1.0, 1.0, 0.45],
-      [1.0, 1.0, 1.0, 0.45, 1.0],
-      [0.12, 0.12, 0.45, 1.0, 1.0]
+      [
+        1,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.45,
+        0.45,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.45,
+        1,
+        1,
+        0.45
+      ],
+      [
+        1,
+        1,
+        1,
+        0.45,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.45,
+        1,
+        1
+      ]
     ]
   },
   {
@@ -75,8 +174,11 @@
     "bundle": "com.altixcode.knotter",
     "planFile": "PLAN.md",
     "tagline": "One continuous cord per colour. Fill the board, cross nothing.",
-    "accent": "#F472B6", "accentLight": "#BE185D",
-    "bg": "#140A11", "surface": "#1F111A", "surfaceAlt": "#2A1824",
+    "accent": "#F472B6",
+    "accentLight": "#BE185D",
+    "bg": "#140A11",
+    "surface": "#1F111A",
+    "surfaceAlt": "#2A1824",
     "benefits": [
       "Every pack unlocked — 500+ boards from 5x5 to 12x12",
       "No ads, ever",
@@ -84,11 +186,41 @@
       "The full daily archive and streak history"
     ],
     "mark": [
-      [1.0, 1.0, 0.12, 0.45, 1.0],
-      [0.12, 1.0, 0.12, 1.0, 0.45],
-      [0.12, 1.0, 1.0, 1.0, 0.12],
-      [0.45, 1.0, 0.12, 0.12, 0.12],
-      [1.0, 0.45, 0.12, 0.12, 0.12]
+      [
+        1,
+        1,
+        0.12,
+        0.45,
+        1
+      ],
+      [
+        0.12,
+        1,
+        0.12,
+        1,
+        0.45
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.45,
+        1,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        1,
+        0.45,
+        0.12,
+        0.12,
+        0.12
+      ]
     ]
   },
   {
@@ -98,8 +230,11 @@
     "bundle": "com.altixcode.wordflock",
     "planFile": "PLAN.md",
     "tagline": "Sixteen words, four hidden groups, four mistakes.",
-    "accent": "#34D399", "accentLight": "#047857",
-    "bg": "#06120E", "surface": "#0E1D17", "surfaceAlt": "#152A21",
+    "accent": "#34D399",
+    "accentLight": "#047857",
+    "bg": "#06120E",
+    "surface": "#0E1D17",
+    "surfaceAlt": "#152A21",
     "benefits": [
       "The full puzzle archive, not just the last seven days",
       "No ads, ever",
@@ -107,11 +242,41 @@
       "Full stats and streak history"
     ],
     "mark": [
-      [1.0, 1.0, 0.12, 0.45, 0.45],
-      [1.0, 1.0, 0.12, 0.45, 0.45],
-      [0.12, 0.12, 0.12, 0.12, 0.12],
-      [0.45, 0.45, 0.12, 1.0, 1.0],
-      [0.45, 0.45, 0.12, 1.0, 1.0]
+      [
+        1,
+        1,
+        0.12,
+        0.45,
+        0.45
+      ],
+      [
+        1,
+        1,
+        0.12,
+        0.45,
+        0.45
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        0.45,
+        0.45,
+        0.12,
+        1,
+        1
+      ],
+      [
+        0.45,
+        0.45,
+        0.12,
+        1,
+        1
+      ]
     ]
   },
   {
@@ -121,8 +286,11 @@
     "bundle": "com.altixcode.minestreak",
     "planFile": "PLAN.md",
     "tagline": "One fair minesweeper board a day. Never a 50/50 guess.",
-    "accent": "#F87171", "accentLight": "#B91C1C",
-    "bg": "#130A0A", "surface": "#1E1111", "surfaceAlt": "#291818",
+    "accent": "#F87171",
+    "accentLight": "#B91C1C",
+    "bg": "#130A0A",
+    "surface": "#1E1111",
+    "surfaceAlt": "#291818",
     "benefits": [
       "The full board archive and every difficulty",
       "No ads, ever",
@@ -130,11 +298,41 @@
       "Detailed streak, time and efficiency stats"
     ],
     "mark": [
-      [0.12, 0.45, 1.0, 0.45, 0.12],
-      [0.45, 1.0, 1.0, 1.0, 0.45],
-      [1.0, 1.0, 1.0, 1.0, 1.0],
-      [0.45, 1.0, 1.0, 1.0, 0.45],
-      [0.12, 0.45, 1.0, 0.45, 0.12]
+      [
+        0.12,
+        0.45,
+        1,
+        0.45,
+        0.12
+      ],
+      [
+        0.45,
+        1,
+        1,
+        1,
+        0.45
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0.45,
+        1,
+        1,
+        1,
+        0.45
+      ],
+      [
+        0.12,
+        0.45,
+        1,
+        0.45,
+        0.12
+      ]
     ]
   },
   {
@@ -144,8 +342,11 @@
     "bundle": "com.altixcode.toppl",
     "planFile": "PLAN_2.md",
     "tagline": "A block swings overhead. Tap to drop. Stack it clean.",
-    "accent": "#60A5FA", "accentLight": "#1D4ED8",
-    "bg": "#080F1C", "surface": "#111A2B", "surfaceAlt": "#1A2539",
+    "accent": "#60A5FA",
+    "accentLight": "#1D4ED8",
+    "bg": "#080F1C",
+    "surface": "#111A2B",
+    "surfaceAlt": "#1A2539",
     "benefits": [
       "No ads, ever",
       "Every tower skin and background",
@@ -153,11 +354,41 @@
       "Full run history and personal bests"
     ],
     "mark": [
-      [0.12, 0.12, 1.0, 0.12, 0.12],
-      [0.12, 1.0, 1.0, 1.0, 0.12],
-      [0.12, 0.45, 1.0, 0.45, 0.12],
-      [0.45, 1.0, 1.0, 1.0, 0.45],
-      [1.0, 1.0, 1.0, 1.0, 1.0]
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        0.45,
+        1,
+        0.45,
+        0.12
+      ],
+      [
+        0.45,
+        1,
+        1,
+        1,
+        0.45
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
     ]
   },
   {
@@ -167,8 +398,11 @@
     "bundle": "com.altixcode.solari",
     "planFile": "PLAN_2.md",
     "tagline": "One Klondike deal a day. Guaranteed winnable. Same for everyone.",
-    "accent": "#4ADE80", "accentLight": "#15803D",
-    "bg": "#07140C", "surface": "#0F2016", "surfaceAlt": "#172D20",
+    "accent": "#4ADE80",
+    "accentLight": "#15803D",
+    "bg": "#07140C",
+    "surface": "#0F2016",
+    "surfaceAlt": "#172D20",
     "benefits": [
       "The full deal archive and unlimited replays",
       "No ads, ever",
@@ -176,11 +410,41 @@
       "Draw-1 and draw-3, plus Vegas scoring"
     ],
     "mark": [
-      [1.0, 1.0, 1.0, 0.45, 0.12],
-      [0.45, 1.0, 1.0, 1.0, 0.45],
-      [0.12, 0.45, 1.0, 1.0, 1.0],
-      [0.12, 0.12, 0.45, 1.0, 1.0],
-      [0.12, 0.12, 0.12, 0.45, 1.0]
+      [
+        1,
+        1,
+        1,
+        0.45,
+        0.12
+      ],
+      [
+        0.45,
+        1,
+        1,
+        1,
+        0.45
+      ],
+      [
+        0.12,
+        0.45,
+        1,
+        1,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.45,
+        1,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.45,
+        1
+      ]
     ]
   },
   {
@@ -190,8 +454,11 @@
     "bundle": "com.altixcode.poplet",
     "planFile": "PLAN_2.md",
     "tagline": "Aim, shoot, pop. Fixed shots, one right answer.",
-    "accent": "#C084FC", "accentLight": "#7E22CE",
-    "bg": "#100A18", "surface": "#1A1124", "surfaceAlt": "#241831",
+    "accent": "#C084FC",
+    "accentLight": "#7E22CE",
+    "bg": "#100A18",
+    "surface": "#1A1124",
+    "surfaceAlt": "#241831",
     "benefits": [
       "Every level unlocked — 300+ hand-tuned boards",
       "No ads, ever",
@@ -199,11 +466,41 @@
       "The daily challenge archive"
     ],
     "mark": [
-      [0.12, 1.0, 1.0, 1.0, 0.12],
-      [1.0, 1.0, 0.45, 1.0, 1.0],
-      [1.0, 0.45, 0.45, 0.45, 1.0],
-      [0.45, 1.0, 0.45, 1.0, 0.45],
-      [0.12, 0.45, 1.0, 0.45, 0.12]
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        1,
+        0.45,
+        1,
+        1
+      ],
+      [
+        1,
+        0.45,
+        0.45,
+        0.45,
+        1
+      ],
+      [
+        0.45,
+        1,
+        0.45,
+        1,
+        0.45
+      ],
+      [
+        0.12,
+        0.45,
+        1,
+        0.45,
+        0.12
+      ]
     ]
   },
   {
@@ -213,8 +510,11 @@
     "bundle": "com.altixcode.quandary",
     "planFile": "PLAN_2.md",
     "tagline": "Five questions a day. Everyone gets the same five.",
-    "accent": "#38BDF8", "accentLight": "#0369A1",
-    "bg": "#06121C", "surface": "#0E1D2A", "surfaceAlt": "#152938",
+    "accent": "#38BDF8",
+    "accentLight": "#0369A1",
+    "bg": "#06121C",
+    "surface": "#0E1D2A",
+    "surfaceAlt": "#152938",
     "benefits": [
       "The full question archive",
       "No ads, ever",
@@ -222,11 +522,41 @@
       "Unlimited practice rounds and full stats"
     ],
     "mark": [
-      [0.45, 1.0, 1.0, 1.0, 0.45],
-      [1.0, 0.12, 0.12, 0.12, 1.0],
-      [0.12, 0.12, 0.45, 1.0, 0.45],
-      [0.12, 0.12, 1.0, 0.12, 0.12],
-      [0.12, 0.12, 1.0, 0.12, 0.12]
+      [
+        0.45,
+        1,
+        1,
+        1,
+        0.45
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.45,
+        1,
+        0.45
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ]
     ]
   },
   {
@@ -236,8 +566,11 @@
     "bundle": "com.altixcode.flipnest",
     "planFile": "PLAN_2.md",
     "tagline": "Flip, match, clear. One themed board a day.",
-    "accent": "#FB923C", "accentLight": "#C2410C",
-    "bg": "#140C06", "surface": "#1F140C", "surfaceAlt": "#2A1D12",
+    "accent": "#FB923C",
+    "accentLight": "#C2410C",
+    "bg": "#140C06",
+    "surface": "#1F140C",
+    "surfaceAlt": "#2A1D12",
     "benefits": [
       "Every theme pack and board size",
       "No ads, ever",
@@ -245,11 +578,41 @@
       "Detailed streak and best-time stats"
     ],
     "mark": [
-      [1.0, 1.0, 0.12, 1.0, 1.0],
-      [1.0, 1.0, 0.12, 1.0, 1.0],
-      [0.12, 0.12, 0.12, 0.12, 0.12],
-      [0.45, 0.45, 0.12, 1.0, 1.0],
-      [0.45, 0.45, 0.12, 1.0, 1.0]
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        0.45,
+        0.45,
+        0.12,
+        1,
+        1
+      ],
+      [
+        0.45,
+        0.45,
+        0.12,
+        1,
+        1
+      ]
     ]
   },
   {
@@ -259,8 +622,11 @@
     "bundle": "com.altixcode.quiktap",
     "planFile": "PLAN_2.md",
     "tagline": "How fast are your reflexes today? Thirty seconds to find out.",
-    "accent": "#FACC15", "accentLight": "#A16207",
-    "bg": "#12100A", "surface": "#1C1910", "surfaceAlt": "#262216",
+    "accent": "#FACC15",
+    "accentLight": "#A16207",
+    "bg": "#12100A",
+    "surface": "#1C1910",
+    "surfaceAlt": "#262216",
     "benefits": [
       "Every test type, not just the daily three",
       "No ads, ever",
@@ -268,11 +634,1067 @@
       "Full history, percentile trends and export"
     ],
     "mark": [
-      [0.12, 0.12, 1.0, 1.0, 0.45],
-      [0.12, 0.45, 1.0, 0.45, 0.12],
-      [0.45, 1.0, 1.0, 1.0, 0.45],
-      [0.12, 0.45, 1.0, 0.45, 0.12],
-      [0.45, 1.0, 1.0, 0.12, 0.12]
+      [
+        0.12,
+        0.12,
+        1,
+        1,
+        0.45
+      ],
+      [
+        0.12,
+        0.45,
+        1,
+        0.45,
+        0.12
+      ],
+      [
+        0.45,
+        1,
+        1,
+        1,
+        0.45
+      ],
+      [
+        0.12,
+        0.45,
+        1,
+        0.45,
+        0.12
+      ],
+      [
+        0.45,
+        1,
+        1,
+        0.12,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "scanlit",
+    "name": "Scanlit",
+    "scheme": "scanlit",
+    "bundle": "com.altixcode.scanlit",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 1,
+    "tagline": "Scan anything. Make any code. Nothing leaves your phone.",
+    "accent": "#4FD1E5",
+    "accentLight": "#0E7490",
+    "bg": "#07121A",
+    "surface": "#0F1E29",
+    "surfaceAlt": "#172B3A",
+    "benefits": [
+      "Custom QR colours, gradients and an embedded logo",
+      "No ads, ever",
+      "Batch generate a whole sheet of codes at once",
+      "Unlimited scan history with search and export"
+    ],
+    "mark": [
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "slug": "convertwise",
+    "name": "Convertwise",
+    "scheme": "convertwise",
+    "bundle": "com.altixcode.convertwise",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 2,
+    "tagline": "Every unit, every currency, one screen.",
+    "accent": "#4ADE80",
+    "accentLight": "#15803D",
+    "bg": "#081410",
+    "surface": "#0F2019",
+    "surfaceAlt": "#172E24",
+    "benefits": [
+      "No ads, ever",
+      "Unlimited pinned conversions on the home screen",
+      "Hourly currency refresh instead of daily",
+      "Full offline rate history with the date each rate was taken"
+    ],
+    "mark": [
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        0.45,
+        1,
+        0.45,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "splitjar",
+    "name": "Splitjar",
+    "scheme": "splitjar",
+    "bundle": "com.altixcode.splitjar",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 3,
+    "tagline": "Tip, split, settle. Before the card comes back.",
+    "accent": "#FBBF24",
+    "accentLight": "#B45309",
+    "bg": "#17110A",
+    "surface": "#221A10",
+    "surfaceAlt": "#2E2416",
+    "benefits": [
+      "Itemised splitting — assign each dish to whoever ate it",
+      "No ads, ever",
+      "Save the people you split with most",
+      "Share a clean breakdown image straight to the group chat"
+    ],
+    "mark": [
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        1,
+        0.12,
+        1,
+        0.12
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        0.45,
+        1,
+        0.45,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "slug": "spinwit",
+    "name": "Spinwit",
+    "scheme": "spinwit",
+    "bundle": "com.altixcode.spinwit",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 4,
+    "tagline": "Let the wheel decide.",
+    "accent": "#F472B6",
+    "accentLight": "#BE185D",
+    "bg": "#170B12",
+    "surface": "#23131C",
+    "surfaceAlt": "#2F1B27",
+    "benefits": [
+      "Unlimited saved wheels instead of three",
+      "No ads, ever",
+      "Weighted entries and remove-on-win draws",
+      "Custom wheel colours and a full spin history"
+    ],
+    "mark": [
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.45,
+        1,
+        0.45,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        0.45,
+        1,
+        0.45,
+        1
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "trilite",
+    "name": "Trilite",
+    "scheme": "trilite",
+    "bundle": "com.altixcode.trilite",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 5,
+    "tagline": "Torch, magnifier, level. Three tools, one tap away.",
+    "accent": "#FDE047",
+    "accentLight": "#A16207",
+    "bg": "#131208",
+    "surface": "#1E1C10",
+    "surfaceAlt": "#2A2718",
+    "benefits": [
+      "No ads, ever",
+      "Strobe and SOS torch patterns",
+      "Magnifier freeze-frame and photo capture",
+      "Level calibration saved per surface"
+    ],
+    "mark": [
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.45,
+        1,
+        1,
+        1,
+        0.45
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "rectap",
+    "name": "Rectap",
+    "scheme": "rectap",
+    "bundle": "com.altixcode.rectap",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 6,
+    "tagline": "One tap records your screen. No watermark.",
+    "accent": "#FB7185",
+    "accentLight": "#BE123C",
+    "bg": "#150A0D",
+    "surface": "#201216",
+    "surfaceAlt": "#2C1A20",
+    "benefits": [
+      "No watermark on exports",
+      "No ads, ever",
+      "1080p and 60fps capture instead of 720p",
+      "Trim and export clips without leaving the app"
+    ],
+    "mark": [
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "multitick",
+    "name": "Multitick",
+    "scheme": "multitick",
+    "bundle": "com.altixcode.multitick",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 7,
+    "tagline": "Every timer you need, running at once.",
+    "accent": "#FB923C",
+    "accentLight": "#C2410C",
+    "bg": "#150F0A",
+    "surface": "#201710",
+    "surfaceAlt": "#2C2018",
+    "benefits": [
+      "Unlimited concurrent timers instead of three",
+      "No ads, ever",
+      "Custom alert sound per timer",
+      "Save and reuse your own timer stacks"
+    ],
+    "mark": [
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.12,
+        1,
+        0.12,
+        1
+      ],
+      [
+        1,
+        0.12,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "ringaway",
+    "name": "Ringaway",
+    "scheme": "ringaway",
+    "bundle": "com.altixcode.ringaway",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 8,
+    "tagline": "A call that gets you out of anything.",
+    "accent": "#34D399",
+    "accentLight": "#047857",
+    "bg": "#07140F",
+    "surface": "#0E1F18",
+    "surfaceAlt": "#162C22",
+    "benefits": [
+      "Premium ringtones and voice packs",
+      "No ads, ever",
+      "Custom caller photos from your library",
+      "Unlimited saved callers and scheduled calls"
+    ],
+    "mark": [
+      [
+        1,
+        1,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        1,
+        1,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        1,
+        1,
+        0.45,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        1,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "slug": "namewell",
+    "name": "Namewell",
+    "scheme": "namewell",
+    "bundle": "com.altixcode.namewell",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 9,
+    "tagline": "Swipe until you both agree on a name.",
+    "accent": "#F9A8D4",
+    "accentLight": "#A21CAF",
+    "bg": "#140B13",
+    "surface": "#1F131E",
+    "surfaceAlt": "#2B1B29",
+    "benefits": [
+      "Meaning, origin and popularity deep-dives",
+      "No ads, ever",
+      "Sibling-name matcher for names that work together",
+      "Unlimited shortlists and partner comparison codes"
+    ],
+    "mark": [
+      [
+        0.12,
+        1,
+        0.12,
+        1,
+        0.12
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "calcpair",
+    "name": "Calcpair",
+    "scheme": "calcpair",
+    "bundle": "com.altixcode.calcpair",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 10,
+    "tagline": "BMI and GPA, worked out properly.",
+    "accent": "#818CF8",
+    "accentLight": "#4338CA",
+    "bg": "#0B0C16",
+    "surface": "#141522",
+    "surfaceAlt": "#1E1F2E",
+    "benefits": [
+      "BMI trend charting over months, not one number",
+      "No ads, ever",
+      "\"What grade do I need\" GPA projector",
+      "Unlimited semesters and saved measurement history"
+    ],
+    "mark": [
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        1,
+        0.45,
+        0.12,
+        0.45,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        1,
+        0.45,
+        0.12,
+        0.45,
+        1
+      ],
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "slug": "mergewit",
+    "name": "Mergewit",
+    "scheme": "mergewit",
+    "bundle": "com.altixcode.mergewit",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 12,
+    "tagline": "Swipe. Merge. Beat yesterday.",
+    "accent": "#A3E635",
+    "accentLight": "#4D7C0F",
+    "bg": "#0F1408",
+    "surface": "#182010",
+    "surfaceAlt": "#222C18",
+    "benefits": [
+      "Every theme pack unlocked",
+      "No ads, ever",
+      "Unlimited undo instead of one step",
+      "Full daily-challenge archive and solve stats"
+    ],
+    "mark": [
+      [
+        1,
+        1,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        1,
+        1,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.45
+      ]
+    ]
+  },
+  {
+    "slug": "sudokly",
+    "name": "Sudokly",
+    "scheme": "sudokly",
+    "bundle": "com.altixcode.sudokly",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 14,
+    "tagline": "A fair sudoku every day, five difficulties deep.",
+    "accent": "#60A5FA",
+    "accentLight": "#1D4ED8",
+    "bg": "#080D17",
+    "surface": "#101724",
+    "surfaceAlt": "#182232",
+    "benefits": [
+      "Unlimited hints instead of three a puzzle",
+      "No ads, ever",
+      "Auto-fill pencil marks and technique explanations",
+      "The whole daily archive back to launch"
+    ],
+    "mark": [
+      [
+        1,
+        0.12,
+        1,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        1,
+        0.12,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.12,
+        1,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        1,
+        0.12,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.12,
+        1,
+        0.12,
+        1
+      ]
+    ]
+  },
+  {
+    "slug": "memoflip",
+    "name": "Memoflip",
+    "scheme": "memoflip",
+    "bundle": "com.altixcode.memoflip",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 15,
+    "tagline": "Find the pairs. Beat your own time.",
+    "accent": "#C084FC",
+    "accentLight": "#7E22CE",
+    "bg": "#110B17",
+    "surface": "#1B1323",
+    "surfaceAlt": "#261B30",
+    "benefits": [
+      "Every deck pack unlocked",
+      "No ads, ever",
+      "6x6 and 8x8 grids beyond the free sizes",
+      "Per-deck best times and a full results history"
+    ],
+    "mark": [
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        1,
+        0.45,
+        0.12,
+        0.45,
+        1
+      ],
+      [
+        1,
+        0.45,
+        0.12,
+        0.45,
+        1
+      ]
+    ]
+  },
+  {
+    "slug": "klondo",
+    "name": "Klondo",
+    "scheme": "klondo",
+    "bundle": "com.altixcode.klondo",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 16,
+    "tagline": "Klondike solitaire, clean and offline.",
+    "accent": "#6EE7B7",
+    "accentLight": "#0F766E",
+    "bg": "#06130F",
+    "surface": "#0D1E18",
+    "surfaceAlt": "#142A22",
+    "benefits": [
+      "Every card back and felt theme unlocked",
+      "No ads, ever",
+      "Unlimited undo and hints",
+      "The full daily-deal archive and win-streak stats"
+    ],
+    "mark": [
+      [
+        1,
+        1,
+        1,
+        0.12,
+        0.12
+      ],
+      [
+        1,
+        0.45,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        1,
+        0.45,
+        1,
+        1
+      ],
+      [
+        0.12,
+        1,
+        1,
+        0.45,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "slug": "quizburst",
+    "name": "Quizburst",
+    "scheme": "quizburst",
+    "bundle": "com.altixcode.quizburst",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 17,
+    "tagline": "Five questions a day. Keep the streak.",
+    "accent": "#A78BFA",
+    "accentLight": "#6D28D9",
+    "bg": "#0D0A17",
+    "surface": "#161223",
+    "surfaceAlt": "#201A30",
+    "benefits": [
+      "Every category unlocked, not three",
+      "No ads, ever",
+      "No daily cap — play as long as you like",
+      "Full answer explanations and category stats"
+    ],
+    "mark": [
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        1,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "ratherly",
+    "name": "Ratherly",
+    "scheme": "ratherly",
+    "bundle": "com.altixcode.ratherly",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 18,
+    "tagline": "Two options. No neutral ground.",
+    "accent": "#FCA5A5",
+    "accentLight": "#B91C1C",
+    "bg": "#150B0B",
+    "surface": "#201212",
+    "surfaceAlt": "#2C1A1A",
+    "benefits": [
+      "Every category pack unlocked",
+      "No ads, ever",
+      "Shareable result cards without a watermark",
+      "Unlimited history and a replayable answered list"
+    ],
+    "mark": [
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0.12,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0.12,
+        0.45,
+        0.45
+      ],
+      [
+        1,
+        1,
+        0.12,
+        0.12,
+        0.12
+      ]
+    ]
+  },
+  {
+    "slug": "dicewit",
+    "name": "Dicewit",
+    "scheme": "dicewit",
+    "bundle": "com.altixcode.dicewit",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 19,
+    "tagline": "Any dice your table needs, plus the scorecard.",
+    "accent": "#7DD3FC",
+    "accentLight": "#0369A1",
+    "bg": "#090F16",
+    "surface": "#121A24",
+    "surfaceAlt": "#1B2531",
+    "benefits": [
+      "Unlimited saved roll presets",
+      "No ads, ever",
+      "Custom dice colours and faces",
+      "Full roll history with exportable logs"
+    ],
+    "mark": [
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        0.12,
+        0.12,
+        0.12
+      ],
+      [
+        1,
+        0.12,
+        0.12,
+        0.12,
+        1
+      ]
+    ]
+  },
+  {
+    "slug": "tapforge",
+    "name": "Tapforge",
+    "scheme": "tapforge",
+    "bundle": "com.altixcode.tapforge",
+    "planFile": "ADS-PLAN.md",
+    "guideItem": 20,
+    "tagline": "Tap, upgrade, prestige. It runs while you sleep.",
+    "accent": "#FCD34D",
+    "accentLight": "#92400E",
+    "bg": "#14100A",
+    "surface": "#1F1910",
+    "surfaceAlt": "#2B2418",
+    "benefits": [
+      "A permanent 2x output multiplier",
+      "No ads, ever",
+      "Offline earnings capped at 24 hours, not 8",
+      "Every forge theme unlocked"
+    ],
+    "mark": [
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ],
+      [
+        0.12,
+        1,
+        1,
+        1,
+        0.12
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0.12,
+        0.45,
+        1,
+        0.45,
+        0.12
+      ],
+      [
+        0.12,
+        0.12,
+        1,
+        0.12,
+        0.12
+      ]
     ]
   }
 ]

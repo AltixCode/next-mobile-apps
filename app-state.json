@@ -1,0 +1,122 @@
+{
+  "loopwits": {
+    "stage": "built",
+    "tests": 391,
+    "device": "verified",
+    "plan": "PLAN.md §1",
+    "pitch": "three daily logic puzzles under one streak",
+    "engines": "Rulers (region placement), Duo (binary grid), OneLine (Hamiltonian path)",
+    "freeTier": "archive limited to the last 7 days; 1 hint per puzzle per day",
+    "screens": "hub, play (all three types), archive, stats, settings, paywall"
+  },
+  "poursort": {
+    "stage": "built",
+    "tests": 298,
+    "device": "none",
+    "plan": "PLAN.md §2",
+    "pitch": "pour until every tube holds one colour",
+    "engines": "pour rules, BFS solver keyed on order-independent states, reverse-scramble generator",
+    "freeTier": "levels 1-40; 1 hint per level",
+    "screens": "level select, play, settings, paywall"
+  },
+  "foldup": {
+    "stage": "built",
+    "tests": 295,
+    "device": "none",
+    "plan": "PLAN.md §3",
+    "pitch": "lift a tile, drop it on its twin",
+    "engines": "board rules, clearability search, unmerge-backwards generator",
+    "freeTier": "levels 1-30; 1 hint per level",
+    "screens": "level select, play, settings, paywall"
+  },
+  "knotter": {
+    "stage": "built",
+    "tests": 305,
+    "device": "none",
+    "plan": "PLAN.md §4",
+    "pitch": "one cord per colour pair, filling every cell",
+    "engines": "Numberlink rules, uniqueness solver, carve-then-keep-the-ends generator, drag logic",
+    "freeTier": "levels 1-50; 1 hint per level",
+    "screens": "level select, play, settings, paywall"
+  },
+  "minestreak": {
+    "stage": "built",
+    "tests": 289,
+    "device": "none",
+    "plan": "PLAN.md §6",
+    "pitch": "one fair minesweeper board a day, never a 50/50",
+    "engines": "board rules, no-guess deduction solver (single-point + subset), reject-until-solvable generator",
+    "freeTier": "archive limited to the last 7 days; 1 hint per board",
+    "screens": "home, play, archive, stats, settings, paywall"
+  },
+  "wordflock": {
+    "stage": "scaffold",
+    "tests": 186,
+    "device": "none",
+    "plan": "PLAN.md §5",
+    "pitch": "sixteen words, four hidden groups, four mistakes",
+    "engines": "guess evaluation, one-away detection, curated puzzle bank",
+    "freeTier": "archive last 7 days, themed packs behind the unlock",
+    "screens": "template only: home placeholder, settings, paywall"
+  },
+  "toppl": {
+    "stage": "scaffold",
+    "tests": 186,
+    "device": "none",
+    "plan": "PLAN_2.md §1",
+    "pitch": "a block swings overhead; tap to drop and stack it clean",
+    "engines": "swing/drop physics, overhang trimming, scoring",
+    "freeTier": "one free continue per run",
+    "screens": "template only: home placeholder, settings, paywall"
+  },
+  "solari": {
+    "stage": "scaffold",
+    "tests": 186,
+    "device": "none",
+    "plan": "PLAN_2.md §2",
+    "pitch": "one Klondike deal a day, guaranteed winnable",
+    "engines": "deck/deal, move rules, winnability search",
+    "freeTier": "archive last 7 days, unlimited undo behind the unlock",
+    "screens": "template only: home placeholder, settings, paywall"
+  },
+  "poplet": {
+    "stage": "scaffold",
+    "tests": 186,
+    "device": "none",
+    "plan": "PLAN_2.md §3",
+    "pitch": "aim, shoot, pop three or more of a colour",
+    "engines": "hex grid, aim/bounce, cluster pop and orphan drop",
+    "freeTier": "levels 1-40",
+    "screens": "template only: home placeholder, settings, paywall"
+  },
+  "quandary": {
+    "stage": "scaffold",
+    "tests": 186,
+    "device": "none",
+    "plan": "PLAN_2.md §4",
+    "pitch": "five questions a day, the same five for everyone",
+    "engines": "question bank, daily selection, scoring",
+    "freeTier": "archive last 7 days, category packs behind the unlock",
+    "screens": "template only: home placeholder, settings, paywall"
+  },
+  "flipnest": {
+    "stage": "scaffold",
+    "tests": 186,
+    "device": "none",
+    "plan": "PLAN_2.md §5",
+    "pitch": "flip cards, find the pairs, one themed board a day",
+    "engines": "deal, flip/match state machine, theme packs",
+    "freeTier": "archive last 7 days, theme packs behind the unlock",
+    "screens": "template only: home placeholder, settings, paywall"
+  },
+  "quiktap": {
+    "stage": "scaffold",
+    "tests": 186,
+    "device": "none",
+    "plan": "PLAN_2.md §6",
+    "pitch": "a thirty-second daily reaction and focus test",
+    "engines": "reaction timing, test types, percentile history",
+    "freeTier": "the daily three; every test type behind the unlock",
+    "screens": "template only: home placeholder, settings, paywall"
+  }
+}
