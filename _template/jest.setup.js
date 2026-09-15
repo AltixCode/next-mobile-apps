@@ -15,14 +15,7 @@ process.env.EXPO_OS = process.env.EXPO_OS || 'ios';
 
 // Reanimated's worklet runtime is native-only. The shipped mock renders the
 // animated components synchronously, which is what component tests need.
-jest.mock('react-native-reanimated', () => {
-  // Reanimated's own mock omits getUseOfValueInStyleWarning — its source literally says
-  // "ADD ME IF NEEDED". The babel plugin injects a call to it around every inline style
-  // object, so without this any screen with an inline style throws
-  // "getUseOfValueInStyleWarning is not a function" at render time, in tests only.
-  const mock = require('react-native-reanimated/mock');
-  return { ...mock, getUseOfValueInStyleWarning: () => undefined };
-});
+jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
 
 jest.mock('expo-haptics', () => ({
   impactAsync: jest.fn(),
@@ -43,10 +36,17 @@ jest.mock('react-native-google-mobile-ads', () => {
   const { View } = require('react-native');
   return {
     __esModule: true,
-    default: () => ({
-      initialize: jest.fn().mockResolvedValue([]),
-      setRequestConfiguration: jest.fn().mockResolvedValue(undefined),
-    }),
+    // One instance, not a fresh pair of mocks per call. `mobileAds()` returning
+    // a new object every time made "was the SDK initialised?" unassertable:
+    // the mock a test held was never the mock the code called, so every such
+    // assertion silently checked a function nobody had invoked.
+    default: (() => {
+      const instance = {
+        initialize: jest.fn().mockResolvedValue([]),
+        setRequestConfiguration: jest.fn().mockResolvedValue(undefined),
+      };
+      return () => instance;
+    })(),
     BannerAd: (props) => React.createElement(View, { testID: 'banner-ad', ...props }),
     BannerAdSize: { ANCHORED_ADAPTIVE_BANNER: 'ANCHORED_ADAPTIVE_BANNER' },
     MaxAdContentRating: { G: 'G' },
