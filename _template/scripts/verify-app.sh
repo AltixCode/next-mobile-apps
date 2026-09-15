@@ -47,7 +47,9 @@ until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1"
 adb reverse tcp:8081 tcp:8081 || true
 
 step 'Building and installing on Android'
-if ! npx expo run:android --device emulator-5554 >"$OUT/android-build.log" 2>&1; then
+# `-d` takes the AVD *name*, not the adb serial: passing `emulator-5554` fails with
+# "Could not find device with name", which reads like the emulator never booted.
+if ! npx expo run:android -d "$AVD" >"$OUT/android-build.log" 2>&1; then
   tail -40 "$OUT/android-build.log"
   fail 'the Android build failed — any app already on the device is the OLD one'
 fi
