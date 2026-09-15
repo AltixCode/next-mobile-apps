@@ -213,17 +213,15 @@ directly, no Apple sign-in at all:
 
 ```bash
 cd /Volumes/ExtremePro/Dev
-bash scripts/ship/rc-apple-credentials.sh                       # what is missing
-bash scripts/ship/rc-apple-credentials.sh --apply \
-  --key-file ~/Certificates/SubscriptionKey_N23G6QX99Z.p8 \
-  --key-id N23G6QX99Z --issuer c7e17516-b80c-42fe-a192-229b4cee0a48 \
-  --vendor 94785861
+python3 scripts/ship/rc-apple-credentials.py            # what is missing
+python3 scripts/ship/rc-apple-credentials.py --apply    # fix it
 ```
 
 Two ways to get it silently wrong:
 
-- **The issuer id is the one on the In-App Purchase tab**, not the App Store
-  Connect API issuer in `~/Certificates/issuerID.txt`.
+- **Nothing needs passing.** The keys and ids come from `~/Certificates`
+  (one issuer id serves both key types; `issuerID.txt` holds it), so the whole
+  command is `python3 scripts/ship/rc-apple-credentials.py --apply`.
 - **RevenueCat validates none of it.** A random P-256 key with an invented key
   id and issuer is accepted and reads back `subscription_key_configured: true`.
   A green run proves the field is set, never that the key is right. Only a
@@ -235,3 +233,29 @@ cannot span projects. Prefix anything touching another project with
 
 Full detail: `docs/agents/05-payments-revenuecat.md` §7 and
 `~/Certificates/README.md`.
+
+
+## 12. A listing that quietly covers less than it claims
+
+Trap #10 was stale data reading as fresh. This is its sibling: a *complete-looking
+list that is only the first page*, and it has now appeared three times here.
+
+- `rc --all` means "show experimental commands in `--help`". It does **not**
+  mean "fetch all pages". A RevenueCat audit built on it would have silently
+  skipped every project past the first page the moment the portfolio outgrew
+  one — and reported a clean result while doing it. The v2 API pages with
+  `next_page` / `starting_after`; follow it.
+- `asc.py`'s own `paged()` exists for the same reason, and its docstring records
+  the original: "a list read from page one is not the list" — five Play records
+  reported where eight existed.
+- `_shared/admob-ids.tsv` listed one wave of apps and said nothing about its
+  scope, which produced a confident "AdMob exists for none of these" about
+  thirty-four records that all existed.
+
+In every case the wrong answer arrived with no error, no empty output and no
+warning. A truncated list is indistinguishable from a short one unless you check
+for the cursor.
+
+**Whenever you read a collection you did not write: find out how it paginates
+before you trust a count.** And if the count is used to decide that nothing is
+wrong, see #10 — prove the check can find a fault first.
