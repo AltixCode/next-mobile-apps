@@ -163,3 +163,24 @@ None errored. All three produced a clean, confident, wrong answer.
 **If a check finds zero problems, prove the check can find one** — point it at a
 case you know is broken before believing a clean result. And prefer the account,
 the API or the process over any local file that claims to describe them.
+
+## 11. `runs-on: [macOS, ARM64]` does not mean the host can sign an iOS build
+
+An iOS release build needs Xcode, CocoaPods, **and the Apple Distribution
+certificate sitting in that specific machine's login keychain**. None of those
+are implied by the runner labels, so adding a third Mac to the pool made iOS
+builds *less* reliable rather than more: jobs began landing on a host that had
+never been set up, and failed at "Install CocoaPods" — or earlier, at codesign.
+
+Pin iOS jobs to a capability label (`ios-signing`) on the machines that are
+actually provisioned. Android and device-free jobs can stay on plain
+`macOS, ARM64`: `setup-java` and `setup-android` bring their own toolchains and
+genuinely do not care which host they get.
+
+Related, and the reason this is filed next to the keychain trap:
+`errSecInternalComponent` from codesign is **the keychain, never the
+certificate**. A runner started by launchd does not inherit the interactive
+session's keychain, so the private key cannot be used and nobody is there to
+answer the prompt. Go straight to the keychain; do not spend time on the
+certificate, the provisioning profile, or whichever framework it happened to be
+signing when it gave up.
