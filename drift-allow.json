@@ -27,5 +27,8 @@
   ],
   "tapforge": [
     "app/settings.tsx"
+  ],
+  "scanlit": [
+    "jest.setup.js"
   ]
 }

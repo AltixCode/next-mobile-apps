@@ -15,7 +15,14 @@ process.env.EXPO_OS = process.env.EXPO_OS || 'ios';
 
 // Reanimated's worklet runtime is native-only. The shipped mock renders the
 // animated components synchronously, which is what component tests need.
-jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
+jest.mock('react-native-reanimated', () => {
+  // Reanimated's own mock omits getUseOfValueInStyleWarning — its source literally says
+  // "ADD ME IF NEEDED". The babel plugin injects a call to it around every inline style
+  // object, so without this any screen with an inline style throws
+  // "getUseOfValueInStyleWarning is not a function" at render time, in tests only.
+  const mock = require('react-native-reanimated/mock');
+  return { ...mock, getUseOfValueInStyleWarning: () => undefined };
+});
 
 jest.mock('expo-haptics', () => ({
   impactAsync: jest.fn(),
