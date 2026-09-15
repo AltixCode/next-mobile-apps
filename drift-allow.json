@@ -36,5 +36,8 @@
   ],
   "wordflock": [
     ".gitignore"
+  ],
+  "rectap": [
+    "docs/STATUS.md"
   ]
 }
