@@ -662,3 +662,42 @@ Take the reading *before* the fix as well as after. Without the before, "it says
 the right thing now" cannot be distinguished from "I was looking at a different
 artifact" — which is a mistake already made once tonight, reading a path instead
 of a bundle identifier.
+
+
+---
+
+## 24. A store screenshot that contains someone else's advert
+
+Capturing foldup on an iPad produced two shots of the same screen. The first was
+clean. The second had a Google test banner across the bottom — a third party's
+creative for an aluminium supplier, with a **"Test mode"** badge sitting on top
+of it.
+
+That is unusable. Apple's guidelines require screenshots to show the app, and a
+visible "Test mode" label is an unambiguous tell that what was captured is a
+debug build. It is also someone else's brand in our listing.
+
+**The difference between the two shots was three seconds of ad fill.** Whether a
+capture is usable therefore depends on whether the banner loaded before the
+shutter, which no script was checking — and every app in this portfolio renders
+a banner on its main screen.
+
+The fix is not to race the ad. Capture with the premium entitlement active so
+`shouldShowAds` returns false and no slot renders at all. That is deterministic,
+and it also shows the app as a paying customer sees it, which is the better
+screenshot regardless.
+
+### And the corollary that caught me first
+
+A duplicate-hash check (trap #20) catches two *identical* frames. It cannot
+catch two *different* frames of the same screen — and an ad filling between
+shots guarantees they differ. My tap missed its target, the hashes differed, the
+check reported "distinct — navigated", and the screen had not changed at all.
+
+**Hash-distinct does not mean navigated.** With ads, a clock, or any animation,
+two shots of one screen will essentially always differ. Assert on something that
+exists only on the destination — a nav-bar title, a back chevron, an element
+label — rather than on frames not matching.
+
+Both halves are the same lesson as trap #20 and trap #15: the check ran, the
+check passed, and the check was not measuring the property anyone cared about.
