@@ -63,7 +63,7 @@
     "build:preview": "eas build --profile preview --platform all",
     "build:production": "npm run check:release && eas build --profile production --platform all",
     "submit:production": "eas submit --profile production --platform all --latest",
-    "check:i18n": "node scripts/check-i18n.mjs",
+    "check:i18n": "node scripts/check-i18n.mjs && node scripts/check-locale-scripts.mjs",
     "check:ui": "node scripts/check-ui-rules.mjs",
     "verify:device": "bash scripts/verify-app.sh"
   },
