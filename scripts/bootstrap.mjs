@@ -13,7 +13,10 @@
  *   node scripts/bootstrap.mjs loopwits   # one app
  *   node scripts/bootstrap.mjs --force    # overwrite existing files
  */
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'node:fs';
+import {
+  readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync,
+  symlinkSync, unlinkSync, chmodSync,
+} from 'node:fs';
 import { dirname, join, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -98,6 +101,22 @@ for (const app of selected) {
       writeFileSync(target, substitute(readFileSync(source, 'utf8'), tokens));
     }
     appCreated += 1;
+  }
+
+  // Every repo mirrors the portfolio manifest for the other engines.
+  for (const mirror of ['CLAUDE.md', 'GEMINI.md']) {
+    const link = join(dest, mirror);
+    try {
+      unlinkSync(link);
+    } catch {
+      // Nothing there yet — the common case on a first run.
+    }
+    symlinkSync('AGENTS.md', link);
+  }
+  // Shell scripts lose their mode through the copy.
+  for (const script of ['verify-all.sh', 'verify-app.sh']) {
+    const file = join(dest, 'scripts', script);
+    if (existsSync(file)) chmodSync(file, 0o755);
   }
 
   created += appCreated;
