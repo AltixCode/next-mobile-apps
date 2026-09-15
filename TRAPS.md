@@ -798,3 +798,42 @@ most.
 The general form, which is the whole of tonight in one sentence: **a check that
 validates the artefact tells you nothing about whether it is an artefact of the
 right thing.** Ad-free, distinct, correctly sized, and of another product.
+
+---
+
+## 27. A red box passes every identity check
+
+`simctl launch` on a **Debug** build starts it with no Metro URL. React Native
+then shows either a red box reading "No script URL provided" or an endless
+launch screen.
+
+Both are the right app. It is installed, it is running, it is frontmost, and
+there is no advert anywhere in the frame — so **every identity guard passes**,
+including the frontmost check that was added specifically to catch a wrong-app
+capture. One red box reached a live App Store listing before it was noticed.
+
+The distinction that matters:
+
+```
+embedded bundle   main.jsbundle inside the .app, no RCTMetroPort
+                  -> simctl launch is safe, the JS is in the binary
+Metro-dependent   no main.jsbundle, RCTMetroPort set
+                  -> simctl launch gives a red box; it needs the dev-client URL
+```
+
+Check before relaunching, rather than assuming which kind of build is installed:
+
+```sh
+c=$(xcrun simctl get_app_container <udid> <bundle-id>)
+[ -f "$c/main.jsbundle" ] && echo embedded || echo needs-metro
+```
+
+Leave a Debug build as the build process started it, or reopen it with the
+`expo-development-client` URL. Never `simctl terminate` then `simctl launch` a
+Metro-dependent build and expect the same screen back.
+
+The general shape, and it is the third variant of it tonight: **the guards
+asserted the subject and the frame was still wrong.** First the wrong app, then
+the right app showing another app's JavaScript from a stale Metro, now the right
+app showing no JavaScript at all. Identity is necessary and it is not
+sufficient — something must also assert the screen contains the app's *content*.
