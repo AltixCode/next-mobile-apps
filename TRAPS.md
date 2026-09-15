@@ -280,3 +280,34 @@ though it were the capability's.
 Before you report a count, say out loud what it counts. "Apps with no file named
 deploy.yml" is obviously not "apps that cannot build", the moment it is said
 that way rather than written as a number.
+
+## 14. "No profiles were found" can mean Apple was down, not that a profile is missing
+
+Solari's archive failed with:
+
+    error: No profiles for 'com.altixcode.solari' were found: Xcode couldn't
+    find any iOS App Development provisioning profiles matching ...
+
+which reads as a provisioning problem and sends you to the developer portal.
+Four lines above it in the same log:
+
+    DVTServices: ... Error = "Communication with Apple failed"
+    A non-HTTP 200 response was received (503) for URL
+    https://appstoreconnect.apple.com/xcbuild/.../listTeams.action
+
+**Automatic signing with `-allowProvisioningUpdates` needs Apple reachable.**
+When `listTeams` returns 503, Xcode cannot fetch or create the profile, and the
+only error it surfaces is the downstream one. The profile was never missing;
+Apple was briefly unavailable. The fix is to re-run, and nothing else.
+
+This is the same shape as the `CODE_SIGN_IDENTITY` episode earlier the same day:
+automatic signing appeared to pick the Development certificate, which looked
+like a signing misconfiguration and was actually a symptom of a locked keychain.
+**Read upward from the error for the first thing that went wrong**, not the last
+thing that complained — the loudest message is usually the furthest downstream.
+
+A practical note for reading these at all: `gh run view --log-failed` refuses
+while the *run* is in progress, even when the job you care about finished
+minutes ago. `gh api /repos/<repo>/actions/jobs/<job_id>/logs` serves a finished
+job's log immediately, and needs `--allow-escape-sequences` plus a
+`sed 's/\x1b\[[0-9;]*m//g'` to be readable.
