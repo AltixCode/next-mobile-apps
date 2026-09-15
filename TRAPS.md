@@ -259,3 +259,24 @@ for the cursor.
 **Whenever you read a collection you did not write: find out how it paginates
 before you trust a count.** And if the count is used to decide that nothing is
 wrong, see #10 — prove the check can find a fault first.
+
+## 13. Name the thing you are measuring, then ask if it is the thing you want
+
+Asked "how many apps lack a build pipeline?", three commands gave three answers,
+all produced without error and two of them wrong:
+
+- counting apps with no file named `deploy.yml` → **18**. That measures a
+  *filename*.
+- grepping for `xcodebuild archive` → **14**. That measures *one mechanism*, and
+  drops two apps whose EAS Build + EAS Submit pipelines never call xcodebuild.
+- counting apps with neither a self-hosted archive nor an EAS build → **12**,
+  which was the real answer.
+
+Each result looked authoritative. The failure is not in the shell: it is
+answering a question about a *capability* by measuring a *proxy* for it — a
+filename, a tool name, a directory — and then reporting the proxy's number as
+though it were the capability's.
+
+Before you report a count, say out loud what it counts. "Apps with no file named
+deploy.yml" is obviously not "apps that cannot build", the moment it is said
+that way rather than written as a number.
