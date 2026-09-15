@@ -701,3 +701,53 @@ label — rather than on frames not matching.
 
 Both halves are the same lesson as trap #20 and trap #15: the check ran, the
 check passed, and the check was not measuring the property anyone cared about.
+
+---
+
+## 25. Build the failing case before you trust the check
+
+Two independent attempts at "does this screenshot contain an advert" were
+written tonight, each shipped after passing on real screenshots, and each was
+confidently wrong about a case nobody had constructed.
+
+**Brightness.** A bottom band far brighter than the body is a white banner.
+It missed a **red** advert — luma weights red at 0.299 — and missed harder
+because the screen behind it was a colourful puzzle board, which raised the body
+it compared against. Band 67 against body 56 read as clean. That screenshot was
+uploaded to App Store Connect.
+
+**Saturation.** An advert is a photograph or a brand colour; these apps are
+near-greyscale. It caught the red banner the brightness test missed, and then
+**missed the white one entirely**, because white is unsaturated — and white is
+Google's own test creative, the single likeliest contaminant. It also
+false-positived on an app whose accent is magenta.
+
+A normalised saturation metric has a third failure: `(hi-lo)/hi` explodes as
+`hi` approaches zero, so a near-black band reads as vividly coloured. A torch
+app with a black lower screen had three perfectly clean captures discarded.
+
+The point is not that the metrics were bad. It is that **each was validated only
+against frames that happened to exist**, and each was blind to a case that took
+four lines to synthesise:
+
+```python
+# a 400x400 frame with a coloured strip across the bottom
+write('ctl-white.png', (245,245,245))   # Google's test creative
+write('ctl-red.png',   (200, 30, 30))   # a brand advert
+write('ctl-clean.png', ( 18, 18, 20))   # a genuine dark footer
+write('nearblack.png', (  3,  1,  2))   # near-black with channel noise
+```
+
+Against those four, the answer was immediate and unarguable: brightness alone
+misses red, saturation alone misses white, both together pass all four. The
+controls are in `_shared/scripts/` so the next checker has to beat them.
+
+**The rule: before trusting a detector, construct the thing it is meant to
+detect — including the variant you have not seen.** A check validated only on
+the data you happen to have tells you about your data, not about the check.
+
+And the better answer was to stop needing the detector: `EXPO_PUBLIC_CAPTURE_MODE`
+suppresses the ad slot so there is nothing to detect. The detectors are now a
+*build* check — if one fires, the capture build lacked the flag — which is a
+narrow, reliable job, unlike "is this frame contaminated", which neither metric
+could do safely alone.
