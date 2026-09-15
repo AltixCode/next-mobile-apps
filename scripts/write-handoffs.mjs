@@ -213,7 +213,7 @@ Changing a bundle id means deleting and recreating the RevenueCat app, which
 | IAP id / product | \`${or(iap.iapId)}\` / \`${or(iap.productId)}\` |
 
 All ten release identifiers plus \`EXPO_TOKEN\` are already GitHub repo secrets.
-Locally they come from \`/Volumes/ExtremePro/Dev/.admob-ids/${app.slug}.env\` —
+Locally they come from \`/Volumes/ExtremePro/Dev/mobile_expo_apps/.admob-ids/${app.slug}.env\` —
 never commit that file.
 
 ## Blocked on a person — cannot be scripted
