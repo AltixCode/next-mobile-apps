@@ -489,3 +489,43 @@ So when a repo has no successful build, check whether it has been *starved*
 rather than assuming it has not been tried. And if you are pushing repeatedly
 to a repo whose queue is deep, expect that none of those pushes built — the
 last one only builds if a runner frees up before the next push lands.
+
+---
+
+## 20. A capture that succeeds is not a capture of the right thing
+
+Three ways a device pass reported success while proving nothing. All three were
+found in one evening, by dev-3a, driving simulators through `idb`.
+
+**A stale Metro server answers for an app that no longer exists.** An
+`expo start` left over from before the repo move — serving a path that had since
+been deleted — was holding port 8081 and answering every bundle request with a
+ConfigError. The app under test showed its launch screen and stopped there,
+which is indistinguishable from the crash we were actually hunting. Before
+concluding anything from an app stuck on its splash, check what owns 8081.
+
+**An almost-empty accessibility tree is not an empty screen.** With the UMP
+consent sheet up, `idb ui describe-all` returned a single element — the app name
+— because the Google consent sheet is a separate window idb does not enumerate.
+That was polled for 160 seconds and nearly called a hang. A screenshot showed a
+fully rendered game with the dialog on top. The ATT prompt that follows *is*
+visible to idb, so this is specific to the UMP sheet. **Screenshot and look; use
+`describe-all` as a hint, never as a verdict.**
+
+**A tap that hits a label still produces a valid screenshot — of the previous
+screen.** "Your answers" was a heading rather than a button, so the navigation
+never happened, and the capture wrote two byte-identical PNGs and reported both
+as successes. Nothing failed: the tap landed, the screenshot was taken, the file
+was written. The capture script now hashes each shot and discards duplicates,
+because comparing file sizes by eye does not scale to two dozen apps — and a
+store listing carrying the same image twice is a rejection, not a blemish.
+
+The common shape, and the reason this sits beside traps #15 and #16: **every one
+of these is a check that ran and passed without checking the thing it was for.**
+A green result from a device pass means "the harness completed", which is a
+different claim from "the app works". Ask what would have to be true for this
+pass to be lying, and then go and look at the pixels.
+
+Related: the same evening, a Debug launch was recorded as "launches and runs
+fine" on the strength of a live pid and an evaluated JS bundle, with nobody
+looking at a frame. Same error, in a status report rather than a script.
