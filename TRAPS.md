@@ -473,3 +473,19 @@ asking for permission to perform by hand was already built in.
 
 General form, and the reason this sits next to trap #12: **an event's name is
 not its cause.** `cancelled` is a state, not an actor.
+
+**And the sharper version, found by dev-3a:** a repo pushed to faster than the
+queue drains **never builds at all**. Wordflock had **8 cancelled runs and zero
+successes** — every push superseded the previous pending build before a runner
+ever freed up. The concurrency group was working exactly as designed the entire
+time, and the app simply had no build, ever.
+
+Nothing about that looks wrong from the outside. There is no failure, no error,
+no red job to investigate: just a run history of cancellations that each have a
+perfectly good explanation. The repo looks busy and healthy while producing
+nothing.
+
+So when a repo has no successful build, check whether it has been *starved*
+rather than assuming it has not been tried. And if you are pushing repeatedly
+to a repo whose queue is deep, expect that none of those pushes built — the
+last one only builds if a runner frees up before the next push lands.
