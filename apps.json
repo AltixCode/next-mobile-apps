@@ -2468,7 +2468,7 @@
     "surface": "#0E1F18",
     "surfaceAlt": "#162C22",
     "benefits": [
-      "Premium ringtones and voice packs",
+      "Every ring and vibration pattern",
       "No ads, ever",
       "Custom caller photos from your library",
       "Unlimited saved callers and scheduled calls"
@@ -2590,6 +2590,14 @@
         ],
         "fill": "accentLight"
       }
+    ],
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Ringaway uses a photo you pick to show that caller on the incoming-call screen. The photo stays on this device and is never uploaded."
+        }
+      ]
     ]
   },
   {

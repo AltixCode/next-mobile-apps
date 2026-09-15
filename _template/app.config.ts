@@ -114,7 +114,7 @@ const config: ExpoConfig = {
         ios: { deploymentTarget: '16.4' },
         android: { compileSdkVersion: 36, targetSdkVersion: 36, minSdkVersion: 24 },
       },
-    ],
+    ],{{EXTRA_PLUGINS}}
   ],
   runtimeVersion: { policy: 'appVersion' },
   owner: process.env.EXPO_OWNER ?? 'altixcodes-team',

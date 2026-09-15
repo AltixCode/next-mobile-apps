@@ -62,6 +62,13 @@ export function tokensFor(app) {
     EXTRA_ANDROID_PERMISSIONS: (app.androidPermissions ?? [])
       .map((p) => `\n      '${p}',`)
       .join(''),
+    // Config plugins beyond the shared five. Same reasoning as the permissions above, plus
+    // one more: an Expo package's config plugin is NOT applied by autolinking — a module
+    // whose plugin is missing links fine, builds fine, and then fails at runtime on the
+    // permission string it never got to write. Ringaway declares expo-image-picker here.
+    EXTRA_PLUGINS: (app.plugins ?? [])
+      .map((plugin) => `\n    ${JSON.stringify(plugin)},`)
+      .join(''),
   };
 }
 
