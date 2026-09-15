@@ -542,3 +542,39 @@ pass to be lying, and then go and look at the pixels.
 Related: the same evening, a Debug launch was recorded as "launches and runs
 fine" on the strength of a live pid and an evaluated JS bundle, with nobody
 looking at a frame. Same error, in a status report rather than a script.
+
+---
+
+## 21. A 404 that says "no such resource type" may mean you built the URL wrong
+
+`asc.call()` prepends `/v1` to any path that is not already a full URL. A PATCH
+written as `call("PATCH", "/v1/appStoreVersions/<id>")` therefore goes to
+`/v1/v1/appStoreVersions/<id>` and comes back:
+
+```
+404: path does not match a defined resource type
+```
+
+That message reads as a statement about the *resource* — this version does not
+exist, or this type is not patchable — and not about the URL. Four apps reported
+FAILED and the conclusion very nearly drawn was that `releaseType` is not
+settable through the API at all. It is; the field changed on the first attempt
+once the path was right.
+
+Two rules:
+
+1. **Pass a full URL for anything that is not a plain `/v1/` path**, so the
+   helper's prefix cannot double up. Any convenience wrapper that rewrites paths
+   will eventually produce a URL you did not intend.
+2. **When an API says a resource does not exist, print the URL you actually
+   called before believing it.** The request you sent and the request you think
+   you sent are different objects, and only one of them is in the log.
+
+This is the same family as trap #18: an API's refusal was read as a fact about
+the world rather than as a fact about the request. There, a note recorded that
+internal TestFlight groups could not be created, and seventeen apps sat
+unreachable for want of one re-probe. Here, a malformed path nearly closed off
+the field that stops an unreviewed binary shipping straight to users.
+
+Found by dev-3a, who read it back from the API rather than trusting the PATCH
+response — which is what turned "four apps FAILED" into a one-character fix.
