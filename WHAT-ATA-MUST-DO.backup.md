@@ -336,3 +336,78 @@ work within seconds.
 The other session had already moved Android builds to Linux runners for a
 different reason (disk and load on the Macs). This is a second, independent
 reason that change was right — both wedged jobs started before it took effect.
+
+---
+
+## Update 01:00 — the cheapest win tonight, above everything else here
+
+**`Atas-Work-Macbook-Pro` is offline, and it is one of only two runners that can
+sign iOS.** Every iOS build in the portfolio is going through a single machine
+with ~123 runs queued behind it. `Sarahs-Mac-mini` and the arm64 Linux container
+have also dropped off.
+
+It looks like a closed lid rather than a configuration problem. **Waking that
+laptop roughly doubles iOS throughput for free** and costs nothing else. If you
+do one thing when you read this, do this one — it is worth more than the
+decisions below.
+
+## AdMob: closed, nothing left for you here
+
+All eight apps that shipped `GADApplicationIdentifier = "-"` now have real ids:
+foldup, knotter, minestreak, loopwits, poursort, wordflock, toppl, quandary.
+
+toppl's and quandary's AdMob apps existed all along — 44 apps × 2 platforms = 88
+against 89 records in the account, which is full coverage, not a gap. dev-04
+caught that before I created duplicates in your live ad account. Rebuilds for
+all eight are queued.
+
+## A note on this machine
+
+I took the load average to 204 running a local build while the CI runner was
+working on the same box — it crashed at about 130 earlier today. I stopped my
+own work, nothing was lost, and the queue now waits for load under 60 before
+starting each build. Mentioning it because it is the kind of thing that should
+not be discovered from a crash report.
+
+
+---
+
+## UPDATE: all four were rejected. Your withdrawal decision is no longer needed.
+
+```
+knotter   REJECTED      foldup   REJECTED
+loopwits  REJECTED      poursort REJECTED
+```
+
+Apple reviewed them and rejected them. foldup's attached build is version 24 —
+the binary carrying `GADApplicationIdentifier = "-"` — and its review submission
+reads `UNRESOLVED_ISSUES`. The precise wording is in Resolution Center, which
+the API does not expose, but an app that dies on its first frame is the obvious
+cause and it matches what was read out of that exact IPA.
+
+**What this changes:**
+
+- **Nothing is waiting on you to withdraw anything.** Rejection released all
+  four from review. New builds can be attached the moment the rebuilds land.
+- **Nothing can ship broken.** The other session had already switched all four
+  from "release automatically on approval" to manual. Had any been approved
+  instead of rejected, it would have gone straight to users.
+- **Four rejections landed on the account in one evening.** That is the thing
+  worth knowing rather than discovering later. The resubmissions need to be
+  clean.
+
+**Why the fix did not arrive in time, plainly:** the cause was found, proven
+from the binaries and corrected in the secrets — but the replacement builds
+never got through. There is **one online iOS-signing runner** and 117 queued
+runs. The diagnosis beat the queue; the fix did not.
+
+That makes the offline laptop the most expensive item on this list, not the
+cheapest. `Atas-Work-Macbook-Pro` being asleep halved the only capacity that can
+produce an iOS binary, on the night we needed to replace four of them.
+
+### Also fixed: age ratings
+
+Every app in App Store Connect now has an age rating; none are NULL. I completed
+klondo's myself. A caution for anyone auditing this later: klondo had all 25
+questionnaire fields answered *while* its rating was still NULL, so a complete
+declaration does not imply a rating — `appStoreAgeRating` is the field to check.
