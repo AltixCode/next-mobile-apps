@@ -28,6 +28,8 @@ function tsv(file) {
 }
 
 const revenuecat = Object.fromEntries(tsv('revenuecat-ids.tsv').map((r) => [r.slug, r]));
+const ascApps = Object.fromEntries(tsv('asc-app-ids.tsv').map((r) => [r.slug, r]));
+const ascIaps = Object.fromEntries(tsv('asc-iap-ids.tsv').map((r) => [r.slug, r]));
 
 function admob(slug) {
   const file = join(DEV, '.admob-ids', `${slug}.env`);
@@ -142,6 +144,8 @@ for (const app of apps) {
   }
   const rc = revenuecat[app.slug] ?? {};
   const ad = admob(app.slug);
+  const asc = ascApps[app.slug] ?? {};
+  const iap = ascIaps[app.slug] ?? {};
   const ci = ciState(app.slug);
   const dest = join(DEV, app.slug, 'HANDOFF.md');
 
@@ -203,6 +207,9 @@ Changing a bundle id means deleting and recreating the RevenueCat app, which
 | AdMob banner (iOS / Android) | \`${or(ad.EXPO_PUBLIC_ADMOB_IOS_BANNER_ID)}\` / \`${or(ad.EXPO_PUBLIC_ADMOB_ANDROID_BANNER_ID)}\` |
 | AdMob interstitial (iOS / Android) | \`${or(ad.EXPO_PUBLIC_ADMOB_IOS_INTERSTITIAL_ID)}\` / \`${or(ad.EXPO_PUBLIC_ADMOB_ANDROID_INTERSTITIAL_ID)}\` |
 | AdMob rewarded (iOS / Android) | \`${or(ad.EXPO_PUBLIC_ADMOB_IOS_REWARDED_ID)}\` / \`${or(ad.EXPO_PUBLIC_ADMOB_ANDROID_REWARDED_ID)}\` |
+| App Store app id | \`${or(asc.ascAppId)}\` |
+| App Store name | ${or(asc.appStoreName)} |
+| IAP id / product | \`${or(iap.iapId)}\` / \`${or(iap.productId)}\` |
 
 All ten release identifiers plus \`EXPO_TOKEN\` are already GitHub repo secrets.
 Locally they come from \`/Volumes/ExtremePro/Dev/.admob-ids/${app.slug}.env\` —
@@ -213,11 +220,17 @@ never commit that file.
 These three have no write API at all. Browser sessions live in the Playwright
 MCP profile (\`~/Library/Caches/ms-playwright-mcp/\`).
 
-1. **App Store Connect record** — the session was expired on 2026-09-15 and
-   **needs a sign-in**. Then:
-   \`asc iris apps create --name "${app.name}" --bundle-id ${app.bundle} --sku ${app.slug}-ios\`
-   The bundle id is already registered. Everything after the record — IAP,
-   pricing, localisations — is scriptable.
+1. **App Store Connect record — done.** App \`${or(asc.ascAppId)}\` exists, with
+   the \`remove_ads\` non-consumable at $3.99 USA base, auto-equalized, plus a
+   free app price schedule and availability in every territory. The store name
+   is **${or(asc.appStoreName)}**, which may differ from the in-app name: App
+   Store display names are globally unique and several short ones in this batch
+   were already taken.
+   Still console-only, and therefore still blocked on a person: the App Privacy
+   data-usage questionnaire, and \`contentRightsDeclaration\` — \`PATCH /v1/apps\`
+   answers 200 for the latter and stores nothing. Without both, adding the
+   version to a review submission fails \`409 STATE_ERROR.ENTITY_STATE_INVALID\`
+   while \`versions check-readiness\` still reports ready.
 2. **Play Console app.** A Play app has **no package name until its first bundle
    is uploaded**, so the order is: create app → upload an AAB to internal testing
    → *then* create the \`remove_ads\` product. Build that first AAB from a
