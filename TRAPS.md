@@ -411,3 +411,35 @@ before trusting it — a gate that passes everywhere may be passing vacuously.
 
 Same family as trap #12 and trap #15: a thing that is correct in isolation
 proves nothing about the property you actually care about.
+
+---
+
+## 18. A documented impossibility is evidence about the day it was written
+
+`asc.py` carried a note explaining that internal TestFlight groups cannot be
+created by API — that `POST /v1/betaGroups` answers `isInternalGroup: false`
+however you ask and silently makes an external duplicate instead. `ship.py`
+printed `no internal group -- create one in App Store Connect (the API cannot)`
+and stopped.
+
+It is creatable. The group reads back from a *fresh GET* as
+`isInternalGroup: true`, takes testers, and takes builds.
+
+**Seventeen apps had processed, ready builds that nobody could install**, for
+as long as that note went unchallenged. The cost of testing it was one request.
+
+Two rules come out of this, and the second is the less obvious one:
+
+1. **Re-probe a refusal before building around it.** A note describing what an
+   API cannot do is a measurement, with a date on it. Treat it the way you would
+   treat any other stale cache: cheap to revalidate, expensive to trust.
+2. **Read the field back on a refusal, not only on a write.** We already had
+   "a successful write means nothing, read the field back". The mirror case is
+   the same bug: the *create response* echoed `isInternalGroup: false`, which is
+   precisely the lie the old note was warning about — and believing that echo is
+   how the wrong conclusion got written down in the first place. A fresh GET
+   told the truth in both directions.
+
+The general shape: a workaround outlives the thing it worked around, and nothing
+ever re-runs the experiment because the note reads like a fact rather than an
+observation.
