@@ -53,6 +53,8 @@ function tokensFor(app) {
     SURFACE_ALT: app.surfaceAlt,
     BENEFITS: JSON.stringify(app.benefits),
     MARK: JSON.stringify(app.mark),
+    // Vector mark, or `null` for an app that still uses the legacy 5x5 grid.
+    ICON: JSON.stringify(app.icon ?? null),
   };
 }
 
