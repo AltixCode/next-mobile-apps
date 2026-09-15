@@ -751,3 +751,50 @@ suppresses the ad slot so there is nothing to detect. The detectors are now a
 *build* check — if one fires, the capture build lacked the flag — which is a
 narrow, reliable job, unlike "is this frame contaminated", which neither metric
 could do safely alone.
+
+---
+
+## 26. Every check was about the image, and none was about the subject
+
+A capture ran for an app whose build had been killed by a watchdog, so the app
+was **never installed**. It photographed whatever was still on screen — a
+different app — and uploaded two frames to the wrong product's App Store
+listing.
+
+Both safeguards passed. The two frames were distinct from each other, and
+neither contained an ad banner. They were correct, well-formed, ad-free,
+right-sized screenshots **of the wrong app**.
+
+`xcrun simctl listapps` showed zero installs of the app whose listing now held
+two of its screenshots.
+
+**The guard is to assert the subject, not the artefact:**
+
+```
+listapps    contains the bundle id      -> it exists on this device
+launchctl   shows UIKitApplication:<id> -> it is the thing running
+```
+
+Both, before capturing, or refuse.
+
+Neither is quite sufficient on its own and together they are still not complete:
+running is not the same as **frontmost**, so a system dialog or another app over
+the top passes both assertions and yields a wrong frame anyway.
+
+### A retroactive audit, and why it only half works
+
+Live screenshots can be checked after the fact by cropping each one's status-bar
+strip and stacking them into a single montage — fourteen screenshots verified in
+one look, because an iPad's status bar carries the app's own name.
+
+**An iPhone screenshot does not.** It shows time, signal, wifi and battery, and
+nothing that identifies the app. So the audit works on iPad and is blind on
+iPhone, which is where most store screenshots live.
+
+That asymmetry is the reason to assert before capturing rather than recognise
+afterwards: the after-the-fact check is unavailable exactly where you need it
+most.
+
+The general form, which is the whole of tonight in one sentence: **a check that
+validates the artefact tells you nothing about whether it is an artefact of the
+right thing.** Ad-free, distinct, correctly sized, and of another product.
