@@ -25,20 +25,18 @@ const ROOT = resolve(HERE, '..');
 const TEMPLATE = join(ROOT, '_template');
 const DEST_ROOT = resolve(ROOT, '..');
 
+// Everything below runs only when this file is the entry point. `regen-file.mjs` imports
+// `tokensFor` from here, and without this guard that import would ALSO bootstrap every app
+// named in regen-file's own argv — a script that copies one file would quietly scaffold
+// eighteen.
+const isEntryPoint = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
 const args = process.argv.slice(2);
 const force = args.includes('--force');
 const only = args.filter((a) => !a.startsWith('--'));
 
-const apps = JSON.parse(readFileSync(join(ROOT, 'apps.json'), 'utf8'));
-const selected = only.length ? apps.filter((a) => only.includes(a.slug)) : apps;
-
-if (selected.length === 0) {
-  console.error(`No app matched ${only.join(', ')}. Known: ${apps.map((a) => a.slug).join(', ')}`);
-  process.exit(1);
-}
-
 /** Every `__TOKEN__` the template may contain, resolved for one app. */
-function tokensFor(app) {
+export function tokensFor(app) {
   return {
     NAME: app.name,
     SLUG: app.slug,
@@ -58,77 +56,88 @@ function tokensFor(app) {
   };
 }
 
-function substitute(text, tokens) {
-  // Braces rather than `__TOKEN__`: React Native's own `__DEV__` is a template token shape,
-  // and substituting it would rewrite real source.
-  return text.replace(/\{\{([A-Z_]+)\}\}/g, (_match, name) => {
-    if (!(name in tokens)) throw new Error(`Unknown template token {{${name}}}`);
-    return tokens[name];
-  });
-}
+if (isEntryPoint) {
+  const apps = JSON.parse(readFileSync(join(ROOT, 'apps.json'), 'utf8'));
+  const selected = only.length ? apps.filter((a) => only.includes(a.slug)) : apps;
 
-/** Files that are not text and must be copied byte-for-byte. */
-const BINARY = /\.(png|jpg|jpeg|ttf|otf|ico|keystore|p8|p12)$/i;
-
-function walk(dir) {
-  const out = [];
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) out.push(...walk(full));
-    else out.push(full);
+  if (selected.length === 0) {
+    console.error(`No app matched ${only.join(', ')}. Known: ${apps.map((a) => a.slug).join(', ')}`);
+    process.exit(1);
   }
-  return out;
-}
 
-let created = 0;
-let skipped = 0;
 
-for (const app of selected) {
-  const dest = join(DEST_ROOT, app.slug);
-  const tokens = tokensFor(app);
-  let appCreated = 0;
-  let appSkipped = 0;
+  function substitute(text, tokens) {
+    // Braces rather than `__TOKEN__`: React Native's own `__DEV__` is a template token shape,
+    // and substituting it would rewrite real source.
+    return text.replace(/\{\{([A-Z_]+)\}\}/g, (_match, name) => {
+      if (!(name in tokens)) throw new Error(`Unknown template token {{${name}}}`);
+      return tokens[name];
+    });
+  }
 
-  for (const source of walk(TEMPLATE)) {
-    const rel = relative(TEMPLATE, source);
-    const target = join(dest, rel);
-    if (existsSync(target) && !force) {
-      appSkipped += 1;
-      continue;
+  /** Files that are not text and must be copied byte-for-byte. */
+  const BINARY = /\.(png|jpg|jpeg|ttf|otf|ico|keystore|p8|p12)$/i;
+
+  function walk(dir) {
+    const out = [];
+    for (const entry of readdirSync(dir)) {
+      const full = join(dir, entry);
+      if (statSync(full).isDirectory()) out.push(...walk(full));
+      else out.push(full);
     }
-    mkdirSync(dirname(target), { recursive: true });
-    if (BINARY.test(source)) {
-      writeFileSync(target, readFileSync(source));
-    } else {
-      writeFileSync(target, substitute(readFileSync(source, 'utf8'), tokens));
-    }
-    appCreated += 1;
+    return out;
   }
 
-  // Every repo mirrors the portfolio manifest for the other engines.
-  for (const mirror of ['CLAUDE.md', 'GEMINI.md']) {
-    const link = join(dest, mirror);
-    try {
-      unlinkSync(link);
-    } catch {
-      // Nothing there yet — the common case on a first run.
+  let created = 0;
+  let skipped = 0;
+
+  for (const app of selected) {
+    const dest = join(DEST_ROOT, app.slug);
+    const tokens = tokensFor(app);
+    let appCreated = 0;
+    let appSkipped = 0;
+
+    for (const source of walk(TEMPLATE)) {
+      const rel = relative(TEMPLATE, source);
+      const target = join(dest, rel);
+      if (existsSync(target) && !force) {
+        appSkipped += 1;
+        continue;
+      }
+      mkdirSync(dirname(target), { recursive: true });
+      if (BINARY.test(source)) {
+        writeFileSync(target, readFileSync(source));
+      } else {
+        writeFileSync(target, substitute(readFileSync(source, 'utf8'), tokens));
+      }
+      appCreated += 1;
     }
-    symlinkSync('AGENTS.md', link);
-  }
-  // Shell scripts lose their mode through the copy.
-  for (const script of ['verify-all.sh', 'verify-app.sh']) {
-    const file = join(dest, 'scripts', script);
-    if (existsSync(file)) chmodSync(file, 0o755);
+
+    // Every repo mirrors the portfolio manifest for the other engines.
+    for (const mirror of ['CLAUDE.md', 'GEMINI.md']) {
+      const link = join(dest, mirror);
+      try {
+        unlinkSync(link);
+      } catch {
+        // Nothing there yet — the common case on a first run.
+      }
+      symlinkSync('AGENTS.md', link);
+    }
+    // Shell scripts lose their mode through the copy.
+    for (const script of ['verify-all.sh', 'verify-app.sh']) {
+      const file = join(dest, 'scripts', script);
+      if (existsSync(file)) chmodSync(file, 0o755);
+    }
+
+    created += appCreated;
+    skipped += appSkipped;
+    console.log(
+      `${app.name.padEnd(12)} ${String(appCreated).padStart(3)} written` +
+        (appSkipped ? `, ${appSkipped} kept` : '') +
+        `  ->  ${dest}`,
+    );
   }
 
-  created += appCreated;
-  skipped += appSkipped;
-  console.log(
-    `${app.name.padEnd(12)} ${String(appCreated).padStart(3)} written` +
-      (appSkipped ? `, ${appSkipped} kept` : '') +
-      `  ->  ${dest}`,
-  );
+  console.log(`\n${selected.length} app(s): ${created} files written, ${skipped} left untouched.`);
+  console.log('Next: per app, `npm install` then `npm run assets` — one at a time.');
 }
-
-console.log(`\n${selected.length} app(s): ${created} files written, ${skipped} left untouched.`);
-console.log('Next: per app, `npm install` then `npm run assets` — one at a time.');

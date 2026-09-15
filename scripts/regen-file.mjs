@@ -13,6 +13,10 @@ import { readFileSync, writeFileSync, existsSync, chmodSync, statSync } from 'no
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Imported rather than duplicated: this file carried its own copy of the token map and fell
+// out of date the moment ICON was added, failing with "Unknown token {{ICON}}" on every app.
+import { tokensFor } from './bootstrap.mjs';
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
 const DEST_ROOT = resolve(ROOT, '..');
@@ -28,13 +32,6 @@ const mode = statSync(source).mode;
 const apps = JSON.parse(readFileSync(join(ROOT, 'apps.json'), 'utf8'));
 const selected = only.length ? apps.filter((a) => only.includes(a.slug)) : apps;
 
-const tokensFor = (app) => ({
-  NAME: app.name, SLUG: app.slug, SCHEME: app.scheme, BUNDLE: app.bundle,
-  TAGLINE: app.tagline, PLAN_FILE: app.planFile, ACCENT: app.accent,
-  ACCENT_LIGHT: app.accentLight, BG: app.bg, SURFACE: app.surface,
-  SURFACE_ALT: app.surfaceAlt, BENEFITS: JSON.stringify(app.benefits),
-  MARK: JSON.stringify(app.mark),
-});
 
 let written = 0;
 for (const app of selected) {
