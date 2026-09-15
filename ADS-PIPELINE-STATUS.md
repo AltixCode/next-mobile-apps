@@ -7,24 +7,24 @@ Legend: ✅ done · 🔨 in progress · ⬜ not started · ⛔ blocked
 
 | # | App | Repo | Scaffold | RevenueCat | Secrets | AdMob | Logic | UI | ASC | Play | iOS QA | Android QA |
 |---|-----|------|----------|-----------|---------|-------|-------|----|-----|------|--------|-----------|
-| 1 | Convertwise | AltixCode/convertwise | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 2 | Calcpair | AltixCode/calcpair | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 3 | Splitjar | AltixCode/splitjar | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 4 | Spinwit | AltixCode/spinwit | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 5 | Multitick | AltixCode/multitick | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 6 | Dicewit | AltixCode/dicewit | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 7 | Mergewit | AltixCode/mergewit | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 8 | Memoflip | AltixCode/memoflip | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 9 | Sudokly | AltixCode/sudokly | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 10 | Klondo | AltixCode/klondo | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 11 | Tapforge | AltixCode/tapforge | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 12 | Ratherly | AltixCode/ratherly | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 13 | Quizburst | AltixCode/quizburst | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 14 | Namewell | AltixCode/namewell | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 15 | Trilite | AltixCode/trilite | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 16 | Ringaway | AltixCode/ringaway | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 17 | Scanlit | AltixCode/scanlit | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 18 | Rectap | AltixCode/rectap | ✅ | ✅ | ✅ | ⛔ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 1 | Convertwise | AltixCode/convertwise | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ✅ | ✅ |
+| 2 | Calcpair | AltixCode/calcpair | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 3 | Splitjar | AltixCode/splitjar | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 4 | Spinwit | AltixCode/spinwit | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 5 | Multitick | AltixCode/multitick | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 6 | Dicewit | AltixCode/dicewit | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 7 | Mergewit | AltixCode/mergewit | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 8 | Memoflip | AltixCode/memoflip | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 9 | Sudokly | AltixCode/sudokly | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 10 | Klondo | AltixCode/klondo | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 11 | Tapforge | AltixCode/tapforge | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 12 | Ratherly | AltixCode/ratherly | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 13 | Quizburst | AltixCode/quizburst | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 14 | Namewell | AltixCode/namewell | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 15 | Trilite | AltixCode/trilite | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 16 | Ringaway | AltixCode/ringaway | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 17 | Scanlit | AltixCode/scanlit | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 18 | Rectap | AltixCode/rectap | ✅ | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 
 ## Build order, and why
 
