@@ -228,3 +228,111 @@ of a reviewer.
 The same two ids above are what its secrets should be set to, and they are
 recorded in the apps' own files — the same source that proved correct for foldup
 against the console.
+
+## The decision, with the actual review states
+
+Read from App Store Connect just now, not inferred:
+
+```
+WAITING_FOR_REVIEW      knotter  foldup  loopwits  poursort    <- carrying "-", crash on launch
+PREPARE_FOR_SUBMISSION  minestreak  wordflock  toppl  quandary <- not submitted, safe
+```
+
+**`WAITING_FOR_REVIEW` means queued, not yet being reviewed.** Apple has not
+started on these four, which is the best moment to act: withdrawing now costs a
+queue position, withdrawing after review starts costs more, and letting them
+through costs either a rejection or — worse — an approval that puts a
+crash-on-launch binary in front of real users.
+
+All four have had their AdMob secrets corrected and are rebuilding now. **A
+fixed binary cannot be attached while a version sits in `WAITING_FOR_REVIEW`**,
+which is why this needs you: the submissions have to be removed from review
+first, and the other session's permission guard correctly refused to do that —
+it is an outward-facing, destructive action on your developer account.
+
+Three options, and the first is the one I would take:
+
+1. **Remove the four from review, attach the rebuilt binaries, resubmit.** Costs
+   a day in the queue. Nothing reaches a reviewer or a user broken.
+2. **Let them be reviewed.** A crash on launch is close to a guaranteed
+   rejection; repeated rejections attract scrutiny across a developer account,
+   and this account has forty-four apps on it.
+3. **Do nothing and hope they clear.** This is the only option with a genuinely
+   bad tail: an approved app that dies on its first frame, in front of users,
+   with reviews to match.
+
+You can do it yourself in App Store Connect — open each app's 1.0.0 version and
+choose to remove it from review — or say the word and the other session will,
+under its own permissions.
+
+The four rebuilt binaries will be waiting either way, so this is a one-step
+action rather than the start of a build cycle.
+
+---
+
+## Update 00:45 — the timer on the in-review apps is defused
+
+All four apps in review (**knotter, foldup, loopwits, poursort**) were set to
+`releaseType: AFTER_APPROVAL`, meaning an Apple approval would have shipped the
+crashing binary straight to users with no human in the loop.
+
+**I have changed all four to `MANUAL`.** Verified by reading the field back, not
+from the PATCH response. An approval now waits for someone to press Release, so
+the worst case is a rejection rather than a live crashing app. This is
+reversible — set it back to `AFTER_APPROVAL` once a good binary is attached.
+
+This does not replace the withdrawal question above; it just means that question
+is no longer on a clock.
+
+**AdMob ids: six of eight now fixed.** foldup, knotter, minestreak, loopwits,
+poursort and wordflock all have real `ADMOB_IOS_APP_ID` / `ADMOB_ANDROID_APP_ID`
+set, read out of each app's own HANDOFF.md and cross-checked against the console
+for foldup. Only **toppl and quandary** remain, and those need AdMob apps
+*created* in the console — they were never provisioned, which is why nothing was
+written down for them.
+
+**Screenshots progressing:** ratherly and ringaway are complete — tested on the
+simulator, three distinct screenshots uploaded each, IAP `READY_TO_SUBMIT`.
+scanlit is building. The recipe that unblocks an IAP turned out to be a
+territory availability record **plus** the review screenshot; neither alone
+moves it off MISSING_METADATA.
+
+## Quick win: a laptop runner is asleep, and it is halving build throughput
+
+```
+Atas-Mac-mini             online    self-hosted,macOS,ARM64,ios-signing
+Atas-Work-Macbook-Pro     OFFLINE   self-hosted,macOS,ARM64,ios-signing   <-- one of only two signers
+hetzner-coolify-runner    online    self-hosted,Linux,X64
+linux-docker-arm64-on-mac OFFLINE   self-hosted,ARM64,Linux
+Sarahs-Mac-mini           online    self-hosted,macOS,ARM64
+```
+
+**Only two runners carry `ios-signing`, and one of them is offline.** Every iOS
+build in the portfolio is therefore going through a single machine, with 123
+runs queued behind it. That is why the six rebuilds are sitting `pending` with
+no jobs created: there is no signing runner free to take them.
+
+`Atas-Work-Macbook-Pro` is presumably a laptop that was closed or went to sleep.
+Waking it, and stopping it sleeping while the queue drains, roughly doubles iOS
+throughput for nothing. It is the cheapest thing available to you tonight.
+
+`linux-docker-arm64-on-mac` is offline again too, which matters less — Android
+now runs on the Hetzner box — but it means Android has one runner rather than
+two.
+
+### Related: Android jobs hang on macOS runners
+
+Two of two long-running Android jobs on macOS runners tonight have wedged, while
+the ones on Linux complete normally:
+
+- dicewit, 87 minutes against a 6m36s baseline
+- convertwise, 111 minutes — its iOS job had already succeeded, so the Android
+  job alone was holding a runner hostage
+
+I cancelled both, each after comparing against a completed job's real duration
+rather than on a hunch. The second cancel freed the Hetzner runner to pick up
+work within seconds.
+
+The other session had already moved Android builds to Linux runners for a
+different reason (disk and load on the Macs). This is a second, independent
+reason that change was right — both wedged jobs started before it took effect.
