@@ -448,22 +448,44 @@ jobs:
       - name: Build Android APK & AAB
         run: |
           mkdir -p build/output
+          # ninja reads this; without it the NDK starts one clang++ per core and
+          # no Gradle flag restrains it.
+          export CMAKE_BUILD_PARALLEL_LEVEL=2
           cd android
-          # `--no-daemon` and a worker cap, because the failure this replaces was
-          # "Gradle build daemon disappeared unexpectedly": the daemon JVM was
-          # being killed outright. Two macOS runners now share this machine with
-          # local Xcode builds, and `org.gradle.parallel=true` against four ABIs
-          # starts more native compilers than the box has memory for. A daemon is
-          # worthless in CI anyway -- nothing reuses it -- and its disappearance
-          # is reported as a Gradle bug rather than as memory pressure.
+          # Three separate memory limits, because the first attempt at this set
+          # only the one that does nothing.
+          #
+          # `--no-daemon` does NOT mean "no JVM". Gradle says so in the log --
+          # "To honour the JVM settings for this build a single-use Daemon
+          # process will be forked" -- and it is that forked JVM that gets
+          # OOM-killed. The flag governs the daemon's LIFETIME, not its memory,
+          # so the build kept dying of "Gradle build daemon disappeared
+          # unexpectedly" with the supposed fix already applied. memoflip died
+          # of it 50 minutes in, and mergewit's runner process died outright at
+          # 36 minutes with every remaining step still pending.
+          #
+          # So, in order of what actually consumes the box:
+          #   org.gradle.jvmargs  caps the forked JVM's heap. This is the knob
+          #                       --no-daemon was mistaken for.
+          #   --max-workers       caps Gradle's own task parallelism.
+          #   CMAKE_BUILD_PARALLEL_LEVEL
+          #                       caps the NATIVE compilers. React Native builds
+          #                       its C++ through externalNativeBuild, which
+          #                       hands off to ninja -- and ninja defaults to one
+          #                       clang++ per core, governed by none of the
+          #                       Gradle flags above. On a 4-core box that is
+          #                       four clang++ processes per ABI, which is the
+          #                       real memory hog and was never capped.
           echo "Building Release APK..."
           ./gradlew assembleRelease --stacktrace --no-daemon --max-workers=2 -Porg.gradle.parallel=false \
+            "-Dorg.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m" \
             "-Pandroid.injected.signing.store.file=$KEYSTORE_PATH" \
             "-Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD" \
             "-Pandroid.injected.signing.key.alias=$KEY_ALIAS" \
             "-Pandroid.injected.signing.key.password=$KEY_PASSWORD"
           echo "Building Release AAB Bundle..."
           ./gradlew bundleRelease --stacktrace --no-daemon --max-workers=2 -Porg.gradle.parallel=false \
+            "-Dorg.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m" \
             "-Pandroid.injected.signing.store.file=$KEYSTORE_PATH" \
             "-Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD" \
             "-Pandroid.injected.signing.key.alias=$KEY_ALIAS" \
