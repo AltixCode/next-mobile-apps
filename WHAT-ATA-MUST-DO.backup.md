@@ -1195,3 +1195,30 @@ default was never examined rather than chosen. But "fairly confident" is not the
 standard for a change to what your customers can install, so it is your call.
 
 Say yes and it is one edit to the shared template, re-rendered across the fleet.
+
+## First fix landed: quandary no longer crashes on launch
+
+```
+quandary  build 39  GADApplicationIdentifier = ca-app-pub-2504845459806550~4375770333
+          attached over build 24, which carried "-"
+```
+
+Proven by reading the binary, not by a green build. That id is exactly the one
+recovered from the AdMob console, so the whole chain is confirmed link by link:
+
+```
+read "-" out of the shipped IPA
+  -> found the real ids in the console
+  -> set the secret under a name the workflow actually reads
+  -> rebuilt
+  -> read the NEW binary back and confirmed the value took
+  -> attached it, and read the attachment back
+```
+
+**Three of those steps had already failed silently at least once tonight** — a
+secret set under a name nothing read, a queued build carrying the old value, and
+an attachment API that reports success regardless. Each is now checked rather
+than assumed.
+
+Seven rebuilds remain queued: foldup, knotter, loopwits, poursort, minestreak,
+wordflock, toppl. Every one has an iOS job waiting on the single signing runner.
