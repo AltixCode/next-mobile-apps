@@ -99,7 +99,90 @@ IPHONE_MIN_CONTENT = 22.0
 MIN_DETAIL_RATIO = 0.045
 
 
-def measure(path: Path) -> tuple[float, float, int, int, int]:
+
+# A dead viewport is a large flat box that is NOT the background.
+#
+# The previous BLANK rule was `detail < MIN_DETAIL_RATIO and variety <= 1`,
+# where detail is edges-per-covered-area. That divides by coverage, so a frame
+# is penalised for showing MORE of the product: toppl's real home screen scored
+# the highest absolute edge density of any frame in the portfolio (0.041 x
+# 42.61% = 1.75, against 1.08 for a passing loopwits frame) and was still called
+# BLANK, because its 42.61% coverage dragged the ratio under the floor. foldup's
+# board was discarded twice the same way. The rule got steadily more elaborate
+# -- a colour-variety clause was bolted on for foldup -- while the underlying
+# measure stayed inverted.
+#
+# Nothing global separates these cases. Measured on the known pair, the true
+# blank scores BELOW a good frame on dominant colour (0.503 vs 0.875) and on
+# bucket count (66 vs 57), so no threshold on either can work in both
+# directions.
+#
+# What actually distinguishes a camera preview is spatial: it is one large
+# CONTIGUOUS flat region in a colour that is not the page background. A dark UI
+# has a large flat background too, which is why "flat" alone fails -- the
+# region has to be foreign to the background to count.
+#
+#     scanlit dead viewport (true blank)   41.3%
+#     multitick home (good)                 3.2%
+#     loopwits in-use (good)                2.9%
+#     toppl home (good, was rejected)       0.1%
+#     worddrop home (good, light theme)     0.1%
+#
+# A 13x margin, against the 0.029-vs-0.041 the old rule tried to split.
+CELL = 32
+FLAT_SPREAD = 24
+BLANK_BOX_PCT = 20.0
+
+
+def largest_foreign_flat_box(rows, w: int, h: int, ch: int) -> float:
+    """Largest connected run of flat cells differing from the background, in %."""
+    gw, gh = w // CELL, h // CELL
+    if gw == 0 or gh == 0:
+        return 0.0
+
+    palette: collections.Counter = collections.Counter()
+    for gy in range(gh):
+        row = rows[gy * CELL]
+        for gx in range(gw):
+            i = (gx * CELL) * ch
+            palette[(row[i] // 16, row[i + 1] // 16, row[i + 2] // 16)] += 1
+    background = palette.most_common(1)[0][0]
+
+    flat = [[False] * gw for _ in range(gh)]
+    for gy in range(gh):
+        for gx in range(gw):
+            values = []
+            for dy in range(0, CELL, 8):
+                row = rows[gy * CELL + dy]
+                for dx in range(0, CELL, 8):
+                    i = (gx * CELL + dx) * ch
+                    values.append((row[i], row[i + 1], row[i + 2]))
+            spread = max(max(v) for v in values) - min(min(v) for v in values)
+            first = values[0]
+            coarse = (first[0] // 16, first[1] // 16, first[2] // 16)
+            flat[gy][gx] = spread < FLAT_SPREAD and coarse != background
+
+    seen = [[False] * gw for _ in range(gh)]
+    best = 0
+    for gy in range(gh):
+        for gx in range(gw):
+            if not flat[gy][gx] or seen[gy][gx]:
+                continue
+            stack = [(gy, gx)]
+            seen[gy][gx] = True
+            size = 0
+            while stack:
+                y, x = stack.pop()
+                size += 1
+                for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
+                    if 0 <= ny < gh and 0 <= nx < gw and flat[ny][nx] and not seen[ny][nx]:
+                        seen[ny][nx] = True
+                        stack.append((ny, nx))
+            best = max(best, size)
+    return 100.0 * best / (gw * gh)
+
+
+def measure(path: Path) -> tuple[float, float, int, int, int, float]:
     """(content %, detail ratio, colour variety, width, height).
 
     COVERAGE ALONE IS NOT ENOUGH, and scanlit proved it. Its scan screen is a
@@ -201,7 +284,8 @@ def measure(path: Path) -> tuple[float, float, int, int, int]:
 
     pct = 100.0 * content / max(total, 1)
     structure = 100.0 * edges / max(samples, 1)
-    return pct, (structure / pct if pct > 0 else 0.0), variety, w, h
+    flat_box = largest_foreign_flat_box(rows, w, h, ch)
+    return pct, (structure / pct if pct > 0 else 0.0), variety, w, h, flat_box
 
 
 def main() -> int:
@@ -212,15 +296,28 @@ def main() -> int:
 
     failures = []
     for path in paths:
-        pct, detail, variety, w, h = measure(path)
+        pct, detail, variety, w, h, flat_box = measure(path)
         is_pad = min(w, h) >= 1600
         floor = IPAD_MIN_CONTENT if is_pad else IPHONE_MIN_CONTENT
         kind = "iPad" if is_pad else "iPhone"
         sparse = pct < floor
-        blank = not sparse and detail < MIN_DETAIL_RATIO and variety <= 1
+        # All three must hold. The flat-box test is an ADDITIONAL condition on
+        # the original rule, never a replacement for it: on its own it flags
+        # hushtunnel's subscription list at 50.3% -- higher than the true blank
+        # -- because a column of large flat cards has the same spatial
+        # signature as a dead viewport. Intersecting the two is strictly more
+        # conservative than either, so this can only ever clear a false
+        # positive, never create one.
+        blank = (
+            not sparse
+            and detail < MIN_DETAIL_RATIO
+            and variety <= 1
+            and flat_box >= BLANK_BOX_PCT
+        )
         label = "SPARSE" if sparse else ("BLANK " if blank else "ok    ")
         print(
-            f"{label}  {pct:5.2f}% content  detail {detail:.3f} colours {variety} "
+            f"{label}  {pct:5.2f}% content  flat-box {flat_box:4.1f}% "
+            f"detail {detail:.3f} colours {variety} "
             f"({kind}, floor {floor:.0f}%)  {path.name}"
         )
         if sparse or blank:
