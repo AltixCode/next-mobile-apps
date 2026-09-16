@@ -1040,3 +1040,113 @@ the grounds that scripting around a credential boundary is credential
 exploration. That was the correct call and it was accepted rather than worked
 around — the keys not being secret is exactly what makes the boundary feel
 ignorable.
+
+---
+
+## Answer to your pnpm question — measured, and the answer is yes, but the win is not where either of us expected
+
+You asked: *"How about we change npm install to pnpm and make sure pnpm works on
+all runners? Wouldn't pnpm be more efficient with node modules?"*
+
+I stopped guessing and measured it. **Yes — and the disk number is much larger
+than the CI number.**
+
+### What the fleet costs today
+
+```
+node_modules across the 44 apps, on npm      89 GB
+one app's node_modules                    584 MB – 2.0 GB
+```
+
+### What it costs under pnpm
+
+I copied toppl and wordflock to a scratch directory, converted the lockfiles
+with `pnpm import`, and installed both with `nodeLinker: hoisted`.
+
+```
+pnpm global store (shared by every app)        2.7 GB
+first app install, warm store                   3.6 s
+SECOND app's marginal cost on disk              0 MB   <-- measured with df, twice
+```
+
+Zero. The second app's `node_modules` *reports* 575 MB to `du`, but the volume's
+used-bytes did not move, because APFS clones the blocks rather than copying
+them. (On the Linux runners pnpm hardlinks instead — same result.)
+
+So the fleet's 89 GB becomes roughly **2.7 GB plus change**. That is the answer
+to your question, and it is worth about **86 GB** on this machine.
+
+### It genuinely works on an Expo app — I checked rather than assumed
+
+toppl, installed by pnpm:
+
+```
+expo config --type public          OK
+expo-modules-autolinking search    OK, resolves real paths
+tsc --noEmit                       OK
+jest --ci                          20 suites, 248 tests, all pass
+expo export --platform ios         OK
+```
+
+The usual reason pnpm breaks React Native is its symlinked `node_modules`, which
+autolinking and CocoaPods cannot follow. **`nodeLinker: hoisted` removes that
+entirely** — you get a flat `node_modules` identical in shape to npm's, while
+still sharing every file with the global store. That is the configuration to
+use; plain pnpm defaults would break the native builds.
+
+Two migration details I hit, so nobody rediscovers them:
+
+- The config must go in **`pnpm-workspace.yaml`**, not `.npmrc`. pnpm v10+ moved
+  it, and npm then warns about the unknown keys in `.npmrc`.
+- pnpm **refuses to run postinstall scripts by default** (`ERR_PNPM_IGNORED_BUILDS`
+  for esbuild, unrs-resolver, sharp). Good security default, but it fails the
+  install until they're listed under `onlyBuiltDependencies`.
+
+### The CI win is real but it is NOT the install
+
+This is the part I'd have got wrong without looking. Measured from an actual run:
+
+```
+Setup Node.js 22   ~100 s   <-- 62 s downloading a 2,556 MB cache + 37 s untar
+npm ci              ~16 s
+Xcode / Gradle    133–428 s
+```
+
+**`npm ci` was never the problem — it's 16 seconds.** The cost is
+`actions/setup-node`'s `cache: 'npm'`, which downloads a **2.5 GB** cache
+tarball from GitHub's cache service *on every job*. These are **self-hosted**
+runners: the machine already had those files. That action is designed for
+throwaway cloud runners and is actively counterproductive on a persistent one —
+about 100 s and 2.5 GB of network and disk churn per job, per app, which is also
+exactly the disk pressure you were worried about.
+
+So there are two separate improvements, and the cheap one is available today:
+
+1. **Drop `cache: 'npm'` on the self-hosted runners.** ~100 s per job back,
+   2.5 GB less churn, no migration risk.
+2. **Move to pnpm with a persistent shared store.** ~86 GB of disk back, and
+   installs drop to a few seconds because the store is already warm from the
+   other 43 apps.
+
+### What I have NOT done
+
+I have not changed any workflow. dev-04 has five workflow fixes committed and
+unpushed, jobs are queued on the runners right now, and a 40-repo workflow edit
+in the middle of that is how we'd lose an evening. The measurement is done and
+the configuration is proven; the rollout is a clean, low-risk job for a quiet
+moment, and it should be one repo first, watched, then the rest.
+
+## Two of your standing questions are now answered, with evidence
+
+**"Does iOS signing work unattended?"** — Yes, proven by an artifact rather than
+a green tick. dicewit's run 34998297745 went Expo Prebuild → CocoaPods → Build &
+Export Signed iOS IPA → **Upload to TestFlight**, every step succeeded, no
+intervention. Signing, export and upload are not open questions any more.
+
+**"Is the push trigger rolled out?"** — Yes, on all 42 repositories that have a
+deploy workflow. Every push builds iOS and Android. There is no rollout left to
+batch.
+
+So the remaining problem is not capability, it is throughput: **one iOS-signing
+runner against roughly 81 queued runs.** Everything that is stuck is stuck behind
+that, and the second signing machine is asleep.
