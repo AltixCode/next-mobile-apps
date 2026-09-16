@@ -35,10 +35,29 @@ Eight iPad frames, one of them borderline. Treat 10% as a line drawn between
 two specific pictures, not as a discovered constant, and move it when better
 exemplars exist.
 
-The iPhone threshold is WEAKER STILL: every iPhone frame available when this was
-written was a good one (34.2% at worst), so there is no bad exemplar anywhere
-near it. 15% is set well below the observed good minimum so it can only catch
-something egregious. It has never fired.
+The iPhone threshold was 15% and is now 22%. It began weaker than the iPad one:
+every iPhone frame available when this was written was a good one (34.2% at
+worst), so with no bad exemplar it was set well below the observed good minimum
+to avoid guessing. It has since fired three times and acquired the exemplars it
+lacked:
+
+    trilite  02-settings    7.31%   BAD
+    quiktap  02-settings    7.31%   BAD
+    trilite  01-home       13.12%   BAD  -- a third of a scrolling screen
+    ratherly 01-home       32.24%   GOOD
+    namewell 01-in-use     32.72%   GOOD
+    poursort iPhone       34.3-54.4%  GOOD
+
+which showed 15% was in the wrong place: 1.9 points above the worst bad frame
+and 17.2 below the worst good. It caught trilite by a hair, and any bad frame
+between 15% and 32% would have passed in silence. 22% sits near the middle of
+a 19-point gap -- 8.9 above the worst bad, 10.2 below the worst good.
+
+That asymmetry is worth naming because it is invisible by construction. We had
+evidence the floor did not OVER-fire (three catches, no false positives) and
+none at all about whether it UNDER-fired, because a false negative produces a
+screenshot that ships. "No false positives" is not evidence a threshold is
+correctly placed; it is evidence about one side of it.
 
 WHAT THIS DELIBERATELY DOES NOT CATCH. knotter-1 measures 20.73% and is a bad
 screenshot -- its level numbers sit at 3.38:1 against their tiles. Density has
@@ -74,7 +93,7 @@ _spec.loader.exec_module(_shotclean)
 # Keyed on the long edge, which separates the two device families without
 # needing the caller to tell us which it captured.
 IPAD_MIN_CONTENT = 10.0
-IPHONE_MIN_CONTENT = 15.0
+IPHONE_MIN_CONTENT = 22.0
 
 
 def content_fraction(path: Path) -> tuple[float, int, int]:
