@@ -1150,3 +1150,48 @@ batch.
 So the remaining problem is not capability, it is throughput: **one iOS-signing
 runner against roughly 81 queued runs.** Everything that is stuck is stuck behind
 that, and the second signing machine is asleep.
+
+## A one-line change that would halve every Android build — your call
+
+Android builds have been failing on the Linux runner with *"Gradle build daemon
+disappeared unexpectedly"*, which is the signature of the kernel killing it for
+memory. The runner has 7 GB.
+
+The cause is not that the box is too small. **We are compiling for four CPU
+architectures and shipping two of them to nobody:**
+
+```
+armeabi-v7a   real devices
+arm64-v8a     real devices
+x86           emulator only
+x86_64        emulator only
+```
+
+Four native targets — the app, expo-modules-core, gesture-handler and
+reanimated — are each compiled four times. That is why an Android build takes
+**fifty minutes** and why it runs out of memory.
+
+This is Expo's default, not a decision anyone took:
+
+```
+buildArchs?: string[]
+@default ["armeabi-v7a", "arm64-v8a", "x86", "x86_64"]
+```
+
+**The change is one line** in `app.config.ts`:
+
+```ts
+android: { buildArchs: ['arm64-v8a', 'armeabi-v7a'], ... }
+```
+
+Halves the compilation, halves the peak memory, and makes the Linux runner
+comfortably sufficient.
+
+**Why I have not simply done it.** It changes what ships: an app built for only
+those two architectures cannot install on x86 Android — in practice some
+Chromebooks and a few uncommon tablets. Standard practice for React Native
+release builds is exactly these two, and I am fairly confident the four-way
+default was never examined rather than chosen. But "fairly confident" is not the
+standard for a change to what your customers can install, so it is your call.
+
+Say yes and it is one edit to the shared template, re-rendered across the fleet.
