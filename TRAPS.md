@@ -910,3 +910,53 @@ Before trusting a measurement to make a decision, ask what it would read **in
 the case you are trying to rule out**. If it reads the same either way — as
 `ps eww` does, and as load does under a concurrency cap — it is not evidence,
 however true it is.
+
+---
+
+## 29. `--no-daemon` does not mean no JVM
+
+An Android build kept failing with:
+
+```
+FAILURE: Gradle build daemon disappeared unexpectedly
+(it may have been killed or may have crashed)
+```
+
+The fix applied was `--no-daemon --max-workers=2 -Porg.gradle.parallel=false`,
+written specifically for that error. The next build carried all three flags and
+**died of the same error, fifty minutes in.**
+
+The log says why, in a line easy to read past:
+
+> To honour the JVM settings for this build a single-use Daemon process will be
+> forked.
+
+`--no-daemon` means Gradle will not *reuse* a daemon between builds. It still
+forks one for this build. The flag changes the daemon's **lifetime**, not its
+**memory** — and memory is what the kernel killed it for.
+
+The worker cap misses for a related reason: on a React Native project the memory
+is consumed by the native `clang++` processes the NDK spawns through
+`externalNativeBuild`, which has its own parallelism and does not answer to
+Gradle's `--max-workers`.
+
+So both flags are real, both are reasonable, and neither addresses the thing that
+runs out. **A fix named after the error is not the same as a fix for the cause.**
+
+### Measure the step, not the job
+
+Assessing whether that machine could build Android at all, the first count was
+"0 successes, 7 failures" — from job conclusions. That was wrong. dicewit's
+Android *build* succeeded there and the job failed later at an unrelated upload
+step that is blocked for other reasons.
+
+```
+by job conclusion    0 success / 7 failure     -> "it never works"
+by build step        2 success / 1 fail / 1 killed / 3 skipped
+                                               -> "it works about half the time"
+```
+
+Those are different conclusions and only one of them is true. A job's conclusion
+is the *last* thing that happened to it, not a verdict on the part you were
+asking about — the same distinction as run status versus job status, one level
+further down.
