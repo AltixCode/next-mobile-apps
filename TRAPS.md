@@ -870,3 +870,43 @@ entered the retry at all.
 A defect on a retry path is exercised precisely when something else is already
 going wrong, and its apparent rarity is the rarity of *that* first failure, not
 of the defect.
+
+---
+
+## 28. A true reading of the wrong quantity
+
+Four times in one night, a correct measurement produced a wrong conclusion.
+None of these were bugs; every number was accurate. None of them measured what
+the decision actually rested on.
+
+**Free memory.** `Pages free` read 0.56 GB, so a capture window was declined as
+too tight. But `Pages inactive` is reclaimable, and counting it gave 24% — the
+window was fine. The refusal cost an hour on a machine that had room.
+
+**`ps eww` for another process's environment.** Used to check whether a build had
+received an environment variable; it returned nothing, and "the flag didn't
+reach the build" was nearly concluded. On macOS it returns nothing for *any*
+pid, so it is equally silent when the variable is present. A measurement that
+cannot distinguish the two answers is not evidence for either.
+
+**Load average, after capping Xcode's compile concurrency.** Load read 12.6 —
+the quietest all night — and was read as "the build slot is free". Three Xcode
+processes were running at 92% each. The cap exists precisely to stop a build
+dominating the machine, so it makes load *anti*-correlated with the thing being
+asked about: the better the cap works, the less a running build shows up. The
+direct question, `pgrep -f xcodebuild`, takes no time and cannot be wrong.
+
+**`$?` after a pipe.** Testing a lock's failure paths with
+`cmd | head -3; echo $?` reported success on both refusals, which looked like a
+serious defect — a failed acquire returning 0 would let a caller build anyway.
+`$?` was `head`'s status. Re-run without the pipe, the exit codes were correct.
+
+The common shape: **the number was real, it was just not the quantity the
+decision rested on.** And in three of the four cases the reading was *plausibly*
+related to the question, which is what made it convincing — free pages really
+are memory, load really is busyness, a pipeline really did exit.
+
+Before trusting a measurement to make a decision, ask what it would read **in
+the case you are trying to rule out**. If it reads the same either way — as
+`ps eww` does, and as load does under a concurrency cap — it is not evidence,
+however true it is.
