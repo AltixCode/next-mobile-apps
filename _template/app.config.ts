@@ -141,7 +141,25 @@ const config: ExpoConfig = {
       'expo-build-properties',
       {
         ios: { deploymentTarget: '16.4' },
-        android: { compileSdkVersion: 36, targetSdkVersion: 36, minSdkVersion: 24 },
+        android: {
+          compileSdkVersion: 36,
+          targetSdkVersion: 36,
+          minSdkVersion: 24,
+          // Two architectures, not Expo's default four.
+          //
+          // The default is ['armeabi-v7a','arm64-v8a','x86','x86_64'], and x86
+          // and x86_64 are emulator targets — no phone or tablet in the Play
+          // device population runs them. Building them compiled four native
+          // targets (the app, expo-modules-core, gesture-handler, reanimated)
+          // four times over: fifty-minute Android builds, and a Gradle daemon
+          // killed for memory on a 7 GB runner.
+          //
+          // Halving the work halves the peak memory, which is what the kernel
+          // was objecting to. The cost is that the app cannot install on x86
+          // Android — some Chromebooks and a few uncommon tablets. Reversible
+          // in one line, and nothing has shipped to Play.
+          buildArchs: ['arm64-v8a', 'armeabi-v7a'],
+        },
       },
     ],{{EXTRA_PLUGINS}}
   ],
