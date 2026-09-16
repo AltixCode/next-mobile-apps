@@ -1178,10 +1178,12 @@ buildArchs?: string[]
 @default ["armeabi-v7a", "arm64-v8a", "x86", "x86_64"]
 ```
 
-**The change is one line** in `app.config.ts`:
+**The change is written, validated and waiting on one command.** It is in the
+shared template — rendered into an app to prove it typechecks and that
+`expo config` resolves, then reverted, so **no app carries it yet**:
 
-```ts
-android: { buildArchs: ['arm64-v8a', 'armeabi-v7a'], ... }
+```sh
+cd mobile_expo_apps/_shared && node scripts/check-drift.mjs --fix
 ```
 
 Halves the compilation, halves the peak memory, and makes the Linux runner
@@ -1222,3 +1224,109 @@ than assumed.
 
 Seven rebuilds remain queued: foldup, knotter, loopwits, poursort, minestreak,
 wordflock, toppl. Every one has an iOS job waiting on the single signing runner.
+
+---
+
+## Update 04:15 — four things fixed, one thing broken at Apple's end
+
+### App Store Connect is refusing every screenshot upload
+
+```
+POST /v1/appScreenshots -> 500 UNEXPECTED_ERROR
+```
+
+Not our payload: the same code path against **splitjar**, which uploaded fine an
+hour earlier, fails identically. Reads work; writes to `appScreenshots` don't.
+Still failing after twenty minutes of retries.
+
+**Nothing is lost.** Captures are now written to `Dev/captures/` **before** the
+upload is attempted, because a capture costs a 20-minute native build and an
+upload costs seconds. `python3 scripts/retry-uploads.py` replays them all when
+Apple recovers — it is idempotent and skips anything already live. **If you read
+this and the queue has finished, run that one command.**
+
+### Six apps could not have been submitted, and now can
+
+netpulse, packpixel, redactpro, scribezero, signpure and storychop had **no
+support URL at all** — a required field. Thirty localizations, five locales
+each. All thirty now set to `https://altixcode.com/contact` and **each one read
+back** to confirm it took.
+
+While checking that URL I found `https://altixcode.com` timing out entirely for
+about forty minutes — every container on the Coolify host was reporting
+`unhealthy`, including the Traefik proxy. **It recovered on its own** and now
+answers in 0.1s, so this is not a standing defect and I have not changed
+anything. Worth knowing it happened: every app's support and marketing URL
+points there, and a reviewer hitting it during an outage is a Guideline 1.5
+rejection.
+
+### The capture pipeline was about to upload two disqualifying images
+
+Writing the replay script, I looked at the 18 preserved screenshots before
+wiring them to anything. Two were unusable:
+
+- **spinwit** — a splash screen. The logo on its background, nothing else.
+- **scanlit** — the paywall, saved as `01-home.png`, showing *both* "The store is
+  not reachable right now" **and** a React Native dev toast reading
+  **"Open debugger to view warnings."**
+
+That dev toast is a failure mode nothing caught, because it isn't an error: the
+app underneath is correct, frontmost, ad-free and fully rendered. It is simply a
+**development overlay drawn on top of a real screen**. It is now refused, along
+with the store-unreachable line.
+
+Both images predate the guards that would have caught them. Everything captured
+before those guards is quarantined in `captures/_quarantine/` and will not be
+uploaded. The lesson, recorded because it will recur: **a guard protects the work
+done after it, never the work already sitting on disk.**
+
+### tapforge cost an hour to a wait that could never end
+
+`device-pass.sh` waited for `expo run:ios` to exit. It never does — after opening
+the app it prints "Logs for your project will appear below." and tails the device
+log for ever. tapforge sat there **51 minutes** with the build finished, the app
+installed and running, and the whole queue stopped behind it. It now waits for
+that log line, with a 40-minute ceiling, and leaves Metro alive because that
+process *is* Metro. tapforge's screenshots were salvaged by capturing against the
+still-running app.
+
+The headroom gate had the same shape of bug: it read **swap-free**, which macOS
+never hands back once pressure drops, so it blocked a build on a machine with
+49% of memory free and a load of 8. It reads memory pressure now.
+
+### CI queue drained from 82 to 45
+
+Cancelled 43 runs in two categories that need no judgement: **15 for the five
+parked apps** that cannot build without their secrets, and **28 superseded
+duplicates** where a newer run for the same repo already exists. Every id is in
+`scratchpad/cancelled-runs.log` with its re-run command. No newest run for a
+buildable app was touched. dev-04's eight rebuilds went from one job scheduled to
+all eight.
+
+### Also done
+
+- **App icons: checked and clear.** Thirteen source icons carry an alpha channel,
+  which Apple rejects — but `expo prebuild` flattens them, and the generated
+  1024×1024 icons are all RGB. No action needed; recorded so nobody re-checks.
+- **Builds attached**: sudokly (had **none**), quizburst 25→33, trilite 23→35 —
+  each verified against the binary before attaching.
+- A **shared build lock** (`scripts/build-slot.sh`) now stops the two sessions
+  taking the machine at once; it is acquired and released per app.
+
+## App Store Connect is refusing screenshot uploads (Apple-side)
+
+```
+POST /v1/appScreenshots -> 500 UNEXPECTED_ERROR
+```
+
+Reads work; writes to that one endpoint fail. Confirmed from both sessions
+independently, and proven not to be our payload by re-running the identical code
+path against an app that uploaded successfully an hour earlier — same 500.
+
+**Nothing is lost.** Captures are now written to `Dev/captures/` **before** any
+upload is attempted, and `scripts/retry-uploads.py` replays them when Apple
+recovers. A capture costs a twenty-minute build; an upload costs seconds, so the
+expensive half no longer depends on the broken cheap half.
+
+This is worth knowing if you see screenshot counts not rising: it is Apple, not
+the pipeline.
