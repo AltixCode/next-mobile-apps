@@ -71,6 +71,34 @@ const GATES = [
     // Applies to any app that ships ads, whether or not it has i18n.
     needs: ['src/monetization/adPolicy.ts', 'src/services/adPolicy.ts'],
   },
+  /*
+   * The three below were added after this file reported "every applicable gate
+   * is wired" while twelve apps shipping fourteen locales had no check-i18n at
+   * all -- five of them declaring `ar` and `fa` with no block behind either, so
+   * an Arabic user got an English UI in an app claiming Arabic.
+   *
+   * The gates were absent, not unwired, so the discovery pass below could not
+   * see them either: it can only find a script that exists. Only the stated
+   * list can say a gate that was never installed is missing, which is the
+   * whole reason the list is stated -- and it was three gates long against a
+   * portfolio running six.
+   */
+  {
+    script: 'check-i18n.mjs',
+    // Any app with a locale table, whichever quoting style it writes.
+    needs: ['src/i18n/index.ts'],
+  },
+  {
+    script: 'check-ui-rules.mjs',
+    // Every app with screens: colour literals, hardcoded copy, dimmed states.
+    needs: ['app/index.tsx', 'src/screens'],
+  },
+  {
+    script: 'check-tsconfig.mjs',
+    // `expo run:ios` rewrites tsconfig.json and drops the route types from
+    // `include`, silently disabling route-type checking. Applies to every app.
+    needs: ['tsconfig.json'],
+  },
 ];
 
 /** Every directory that looks like an app, template and shared dirs excluded. */
