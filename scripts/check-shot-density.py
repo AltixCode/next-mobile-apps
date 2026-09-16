@@ -99,8 +99,8 @@ IPHONE_MIN_CONTENT = 22.0
 MIN_DETAIL_RATIO = 0.045
 
 
-def measure(path: Path) -> tuple[float, float, int, int]:
-    """(content %, detail ratio, width, height).
+def measure(path: Path) -> tuple[float, float, int, int, int]:
+    """(content %, detail ratio, colour variety, width, height).
 
     COVERAGE ALONE IS NOT ENOUGH, and scanlit proved it. Its scan screen is a
     camera viewport filling roughly 60% of the frame; a simulator has no camera,
@@ -169,9 +169,39 @@ def measure(path: Path) -> tuple[float, float, int, int]:
             ) > 24:
                 edges += 1
 
+    # Distinct colours covering at least 1% of the frame, background excluded.
+    #
+    # This is what actually separates a blank region from a board, and the
+    # detail ratio alone does not. foldup's game screen -- four purple tiles on
+    # a 3x3 grid, "Tap a tile, then its twin" -- scored 0.039 against a 0.045
+    # threshold and was discarded twice as BLANK. It is the best frame that app
+    # produces. A board of large flat tiles has exactly the edge-per-area
+    # signature of one large flat box, because that is what it is made of.
+    #
+    # But a blank viewport is ONE colour and a board is several:
+    #
+    #     scanlit blank viewport (bad)      1
+    #     foldup board (good, rejected)     3
+    #     foldup level grid (good)          4
+    #     knotter board (good)              7
+    #
+    # So BLANK now requires both a low detail ratio AND near-total colour
+    # uniformity. A frame can have big flat shapes; it cannot have only one.
+    palette: collections.Counter = collections.Counter()
+    for y in range(0, h, 16):
+        row = rows[y]
+        for x in range(0, w, 16):
+            i = x * ch
+            palette[(row[i] // 16, row[i + 1] // 16, row[i + 2] // 16)] += 1
+    ground = palette.most_common(1)[0][0]
+    seen = sum(palette.values())
+    variety = sum(
+        1 for c, n in palette.items() if c != ground and n / max(seen, 1) >= 0.01
+    )
+
     pct = 100.0 * content / max(total, 1)
     structure = 100.0 * edges / max(samples, 1)
-    return pct, (structure / pct if pct > 0 else 0.0), w, h
+    return pct, (structure / pct if pct > 0 else 0.0), variety, w, h
 
 
 def main() -> int:
@@ -182,15 +212,15 @@ def main() -> int:
 
     failures = []
     for path in paths:
-        pct, detail, w, h = measure(path)
+        pct, detail, variety, w, h = measure(path)
         is_pad = min(w, h) >= 1600
         floor = IPAD_MIN_CONTENT if is_pad else IPHONE_MIN_CONTENT
         kind = "iPad" if is_pad else "iPhone"
         sparse = pct < floor
-        blank = not sparse and detail < MIN_DETAIL_RATIO
+        blank = not sparse and detail < MIN_DETAIL_RATIO and variety <= 1
         label = "SPARSE" if sparse else ("BLANK " if blank else "ok    ")
         print(
-            f"{label}  {pct:5.2f}% content  detail {detail:.3f} "
+            f"{label}  {pct:5.2f}% content  detail {detail:.3f} colours {variety} "
             f"({kind}, floor {floor:.0f}%)  {path.name}"
         )
         if sparse or blank:
