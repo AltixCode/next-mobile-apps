@@ -960,3 +960,36 @@ Those are different conclusions and only one of them is true. A job's conclusion
 is the *last* thing that happened to it, not a verdict on the part you were
 asking about — the same distinction as run status versus job status, one level
 further down.
+
+## 31. A zero exit status is not a report on the outcome
+
+Four separate failures in one night were the same failure: a call returned
+success while doing nothing at all, and the code above it had no other signal
+to read.
+
+- `xcrun simctl openurl <udid> "<scheme>://expo-development-client/?url=..."`
+  exits 0 and launches nothing. iOS puts up a confirmation sheet — *Open in
+  "Quizburst"?* — and waits for a human. The nudge loop called it ten more
+  times and stacked ten dialogs over the simulator while the capture step
+  reported, accurately, that the app was not running.
+- A lock keyed on `$$` in a subshell took a lock nobody else was contending
+  for, every time, and exited 0.
+- The ad gates passed on apps whose ad wiring was absent, because the script
+  they ran resolved its own root rather than the app's.
+- `check-drift.mjs` reported clean on files no app had ever received.
+
+The shape is a call whose only signal is an exit code, where the interesting
+outcome — did anything happen? — is not encoded in that code. The exit status
+answers *did the command run*, and is read as *did the thing occur*.
+
+The rule: after any call whose success you cannot distinguish from a no-op,
+read back the state you were trying to change. Not the return value — the
+state. `attach-verified-build.py` re-fetches the build after attaching it, and
+`verify-build-identifier.py` reads the identifier out of the shipped IPA
+instead of trusting the secret that fed it, for exactly this reason.
+
+The corollary, which cost more than the trap itself: *have you ever run the
+case where it fails?* A branch that has only been exercised on the happy path
+has not been tested. The `simctl launch` replacement passed its one trial
+because the app was already running, so the relaunch branch printed its message
+and never executed.

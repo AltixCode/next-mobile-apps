@@ -144,6 +144,42 @@ for (const name of apps()) {
   }
 }
 
+/*
+ * A second pass, which exists because the first one missed nine apps.
+ *
+ * GATES above is a stated list, and the comment defending that is right about
+ * why: the point is to cover apps `_template` has never heard of, so the list
+ * cannot be inferred from the template. But a stated list answers only "is each
+ * gate I know about wired?", and says nothing about a gate nobody told it about.
+ *
+ * It has not caught anything yet, and the honest history matters more than the
+ * pass would: this was written after I concluded `check-tsconfig.mjs` ran in
+ * nothing, having grepped `package.json` and not `scripts/verify-all.sh`, which
+ * is where all thirty apps invoke it from. The gate was wired the whole time
+ * and this file was right to stay quiet. The pass survives because the blind
+ * spot it closes is real even though the instance that prompted it was not.
+ * Presence is treated as a claim. If somebody put `scripts/check-*.mjs` in an
+ * app, they meant it to run; a gate nothing invokes is a gap no matter whose
+ * list it is on. No `needs` is required here, because the file's
+ * existence in that app is the applicability signal.
+ */
+for (const name of apps()) {
+  const dir = join(PORTFOLIO, name);
+  const scripts = join(dir, 'scripts');
+  if (!existsSync(scripts)) continue;
+  const wiring = entryPoints(dir);
+  const known = new Set(GATES.map((g) => g.script));
+  for (const file of readdirSync(scripts)) {
+    if (!/^check-.*\.mjs$/.test(file) || known.has(file)) continue;
+    // check-drift and check-gate-coverage are portfolio-wide tools that are
+    // deliberately run from _shared, not from inside an app.
+    if (file === 'check-drift.mjs' || file === 'check-gate-coverage.mjs') continue;
+    if (!wiring.includes(file)) {
+      rows.push({ app: name, gate: file, state: 'PRESENT BUT NEVER RUN' });
+    }
+  }
+}
+
 const gaps = rows.filter((r) => r.state !== 'wired' && r.state !== 'n/a');
 
 if (gaps.length === 0) {
