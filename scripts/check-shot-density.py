@@ -95,9 +95,41 @@ _spec.loader.exec_module(_shotclean)
 IPAD_MIN_CONTENT = 10.0
 IPHONE_MIN_CONTENT = 22.0
 
+# Detail per unit of covered area. See `structure_ratio` below.
+MIN_DETAIL_RATIO = 0.045
 
-def content_fraction(path: Path) -> tuple[float, int, int]:
-    """Percentage of the frame that is not background, plus its dimensions."""
+
+def measure(path: Path) -> tuple[float, float, int, int]:
+    """(content %, detail ratio, width, height).
+
+    COVERAGE ALONE IS NOT ENOUGH, and scanlit proved it. Its scan screen is a
+    camera viewport filling roughly 60% of the frame; a simulator has no camera,
+    so the viewport renders as a flat filled box. It measured 49.47% content and
+    passed comfortably -- **the box is covered, and there is nothing in it**.
+    No threshold fixes that: 49% is nowhere near any floor either of us would
+    set, and raising the floor makes it worse, not better.
+
+    So a second measure. Real interface has internal detail -- text, borders,
+    controls -- and its edge count scales with the AREA it occupies. A flat
+    region has edges only at its perimeter, which scales with the perimeter.
+    So detail-per-covered-area collapses as a blank region grows, while it
+    stays roughly constant for genuine UI at any size:
+
+        frame                  content%   structure%   ratio
+        blank viewport (BAD)     49.32       1.44      0.029
+        mid-solve (GOOD)         28.80       1.82      0.063
+        menu w/ content (GOOD)   12.43       1.09      0.088
+        poursort iPhone (GOOD)   54.59       5.20      0.095
+        poursort iPhone (GOOD)   34.36       3.28      0.095
+
+    Note the structure column alone would be useless: the blank viewport scores
+    1.44, ABOVE a perfectly good frame at 1.09. Only the ratio separates them.
+
+    ONE BAD EXEMPLAR. This rests on a single frame, with the nearest good one
+    2.2x above it. That is a wider margin than the density floor ever had, and
+    it is still one example -- treat 0.045 as a line drawn under one picture.
+    The same caution the iPhone floor needed, for the same reason.
+    """
     rows, w, h, ch = _shotclean.rows(str(path))
 
     # The modal colour of a coarse sample is the ground. Quantised to 3 bits per
@@ -111,10 +143,11 @@ def content_fraction(path: Path) -> tuple[float, int, int]:
             counts[(row[i] // 8, row[i + 1] // 8, row[i + 2] // 8)] += 1
     bg = counts.most_common(1)[0][0]
 
-    content = total = 0
+    content = total = edges = samples = 0
+    dx = 4
     for y in range(0, h, 4):
         row = rows[y]
-        for x in range(0, w, 4):
+        for x in range(0, w - dx, 4):
             i = x * ch
             total += 1
             distance = (
@@ -124,7 +157,21 @@ def content_fraction(path: Path) -> tuple[float, int, int]:
             )
             if distance > 2:
                 content += 1
-    return 100.0 * content / max(total, 1), w, h
+            # Horizontal neighbour four pixels away: an edge is a visible step
+            # in any channel. Sampling one axis is enough -- text and borders
+            # produce horizontal transitions everywhere.
+            j = (x + dx) * ch
+            samples += 1
+            if (
+                abs(row[i] - row[j])
+                + abs(row[i + 1] - row[j + 1])
+                + abs(row[i + 2] - row[j + 2])
+            ) > 24:
+                edges += 1
+
+    pct = 100.0 * content / max(total, 1)
+    structure = 100.0 * edges / max(samples, 1)
+    return pct, (structure / pct if pct > 0 else 0.0), w, h
 
 
 def main() -> int:
@@ -135,21 +182,27 @@ def main() -> int:
 
     failures = []
     for path in paths:
-        pct, w, h = content_fraction(path)
+        pct, detail, w, h = measure(path)
         is_pad = min(w, h) >= 1600
         floor = IPAD_MIN_CONTENT if is_pad else IPHONE_MIN_CONTENT
         kind = "iPad" if is_pad else "iPhone"
-        ok = pct >= floor
+        sparse = pct < floor
+        blank = not sparse and detail < MIN_DETAIL_RATIO
+        label = "SPARSE" if sparse else ("BLANK " if blank else "ok    ")
         print(
-            f"{'SPARSE' if not ok else 'ok    '}  {pct:5.2f}% content "
+            f"{label}  {pct:5.2f}% content  detail {detail:.3f} "
             f"({kind}, floor {floor:.0f}%)  {path.name}"
         )
-        if not ok:
+        if sparse or blank:
             failures.append(path)
 
     if failures:
         print(
             f"\n{len(failures)} frame(s) show too little of the product.\n"
+            "SPARSE: too little of the frame is covered.\n"
+            "BLANK:  the frame is covered by something with no detail in it --\n"
+            "        usually a view that cannot render in a simulator, such as a\n"
+            "        camera preview, which comes out as a flat filled box.\n\n"
             "This is not a rendering fault -- the app is almost certainly fine and\n"
             "the picture is accurate. It is a picture of the app doing nothing.\n"
             "Drive the app into a real state (start a game, fill the board, play a\n"
