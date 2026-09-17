@@ -2260,17 +2260,17 @@
     "bundle": "com.altixcode.rectap",
     "planFile": "ADS-PLAN.md",
     "guideItem": 6,
-    "tagline": "One tap records your screen. No watermark.",
+    "tagline": "One tap records your screen. Free recordings stop at 3 minutes.",
     "accent": "#FB7185",
     "accentLight": "#BE123C",
     "bg": "#150A0D",
     "surface": "#201216",
     "surfaceAlt": "#2C1A20",
     "benefits": [
-      "No watermark on exports",
-      "No ads, ever",
-      "1080p and 60fps capture instead of 720p",
-      "Trim and export clips without leaving the app"
+      "No ads, ever again",
+      "Record for as long as you want",
+      "One payment, never a subscription",
+      "Nothing leaves your device"
     ],
     "mark": [
       [
